@@ -1,0 +1,28 @@
+textarea.sdp {
+    min-width:640px;
+    min-height:10em;
+    display: block;
+}
+
+.system-log {
+    color: blue;
+    text-align: right;
+}
+
+.message {
+    font-size:22px;
+    margin:10px;
+
+}
+
+.message-subject {
+    color: purple;
+    background-color: #c5c5c5;
+    font-weight: bold;
+    padding: 5px;
+    margin: 10px;
+}
+
+.message-body {
+    color:black;
+}
