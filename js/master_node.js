@@ -6,9 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-
 var myId,parentId;
-var isRoot = true;
 
 function listen(myId) {
     parentId = Math.floor(myId / 2);
