@@ -7,9 +7,10 @@
  */
 
 var mainRef = new Firebase("https://rtc.firebaseio.com/hub_test_v1/");
+var projectsRef = mainRef.child("projects");
 //var projectName = prompt("Enter your project name.","");
 var projectName = "test";
-var projectRef = mainRef.child(projectName);
+var projectRef =  projectsRef.child(projectName);
 var nextIdRef = projectRef.child("nextId");
 var nodesRef = projectRef.child("nodes");
 
