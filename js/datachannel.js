@@ -142,28 +142,6 @@ function setupChannel(channel,localPC,remotePC){
             var json = JSON.parse(data);
             if (typeof json === "object" && json.type){
                 commandDispatcher(json.type,remotePC,json);
-                /*
-                switch (json.type) {
-                    case "request_dataset":
-                        log("request_dataset");
-                        break;
-                    case "response_dataset":
-                        log("response_dataset");
-                        break;
-                    case "request_program":
-                        log("request_program");
-                        break;
-                    case "response_program":
-                        log("response_dataset");
-                        break;
-                    case "answer":
-                        log("answer");
-                        break;
-                    default:
-                        log("unknown");
-                }
-                */
-
             }
         }
     };
