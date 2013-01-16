@@ -14,17 +14,8 @@
   <link rel="stylesheet" href="./css/datachannel.css" type="text/css">
   <script src="./js/misc.js"></script>
   <script src="./js/datachannel.js"></script>
-  <script>
-    $(function () {
-      var worker = new Worker("./js/wordcount_worker.js");
-      worker.onmessage = function (evt) {
-        log(evt.data);
-      };
+  <script src="./js/ui_node.js"></script>
 
-     // var data = [ 'jan piet klaas', 'piet klaas', 'japie' ];
-     // worker.postMessage({type:"map", input:data});
-    });
-  </script>
 </head>
 <body>
 <h1>Web P2P Grid:Normal Node</h1>

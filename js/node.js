@@ -8,11 +8,6 @@
 
 var mainRef = new Firebase("https://rtc.firebaseio.com/hub_test_v1/");
 var projectsRef = mainRef.child("projects");
-//var projectName = prompt("Enter your project name.","");
-var projectName = "test";
-var projectRef =  projectsRef.child(projectName);
-var nextIdRef = projectRef.child("nextId");
-var nodesRef = projectRef.child("nodes");
 
 var myId,parentId;
 
@@ -33,26 +28,4 @@ function listen(myId) {
                 break;
         }
     });
-
 }
-
-$(function () {
-    if (isRoot) {
-        myId = 1;
-        nodesRef.remove(function(){
-            nextIdRef.set(myId, function() {
-                listen(myId);
-            });
-        });
-    } else {
-        nextIdRef.once('value', function (snapshot) {
-            myId = snapshot.val();
-            listen(myId);
-            nodesRef.child(parentId).child("queue").push({
-                type:"request",
-                sender:myId
-            });
-            initiateCall();
-        });
-    }
-});
