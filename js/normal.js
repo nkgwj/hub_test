@@ -5,7 +5,6 @@
  * Time: 18:22
  * To change this template use File | Settings | File Templates.
  */
-
 function onaddedproject (addedProject) {
     var option = $("<option>").attr("value",addedProject.name()).html(addedProject.name());
     $("#project").append(option);

@@ -5,7 +5,6 @@
  * Time: 18:22
  * To change this template use File | Settings | File Templates.
  */
-
 var project;
 var programFile;
 var datasetsFile;
@@ -29,18 +28,14 @@ function startUp(){
     nextIdRef = projectRef.child("nextId");
     nodesRef = projectRef.child("nodes");
 
-    //var nextIdRef = projectRef.child("nextId");
-    //nextIdRef.set(2);
-    //listen(myId);
     myId = 1;
     nodesRef.remove(function(){
         listen(myId);
     });
 
-    var url; // = "./js/wordcount_mapreduce.js"
     var blob = new Blob([program], {type:"text\/javascript"});
-    url = URL.createObjectURL(blob);
-    log(url);
+    var url = URL.createObjectURL(blob);
+
     var worker = new Worker(url);
     worker.onmessage = function (evt) {
         log(evt.data);
