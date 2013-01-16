@@ -49,3 +49,14 @@ function error(e) {
     }
     endCall();
 }
+
+function validateProjectName(projectName) {
+    if (typeof projectName !== 'string') {
+        return false;
+    }
+
+    if (projectName == ""){
+        return false;
+    }
+    return true;
+}
