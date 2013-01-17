@@ -41,7 +41,7 @@ function startUp(){
         log(evt.data);
     };
 
-    worker.postMessage({type:"map", input:dataset});
+    worker.postMessage({command:"map", input:dataset});
     datasetStore.store(dataset);
 }
 
