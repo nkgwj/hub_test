@@ -11,6 +11,7 @@ var projectsRef = mainRef.child("projects");
 var projectRef,nextIdRef,nodesRef;
 var project;
 var myId,parentId;
+//var childrenIds = [];
 
 function listen(myId) {
     parentId = Math.floor(myId / 2);
