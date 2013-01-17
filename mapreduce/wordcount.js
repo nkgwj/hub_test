@@ -32,21 +32,24 @@ var MapReduce = (function () {
 
     MapReduce.prototype.map =  function(input){
         var that = this;
+        var intermediates = {};
         input.forEach(function(item){
             that.task.map(item,function(key,value){
-                if(typeof (that.intermediate[key])==="undefined"){
-                    that.intermediate[key]=[];
+                if(typeof (intermediates[key])==="undefined"){
+                    intermediates[key]=[];
                 }
-                that.intermediate[key].push(value)
+                intermediates[key].push(value)
             });
+
         });
+        return intermediates;
     };
 
-    MapReduce.prototype.reduce = function() {
+    MapReduce.prototype.reduce = function(intermediate) {
         var that = this;
-        for(var key in mapReduce.intermediate){
-            this.task.reduce(key,that.intermediate[key],function(key,value){
-                that.intermediate[key] = [value];
+        for(var key in intermediate){
+            this.task.reduce(key,intermediate[key],function(key,value){
+                intermediate[key] = [value];
             })
         }
     };
@@ -64,10 +67,10 @@ self.onmessage = function(event){
         switch (msg.command){
             case "map":
                 if(msg.dataset){
-                    mapReduce.map(msg.dataset);
+                    var intermediates = mapReduce.map(msg.dataset);
                     self.postMessage({
                        command:"intermediates",
-                       intermediates:mapReduce.intermediate
+                       intermediates:intermediates
                     });
                 }
                 break;
