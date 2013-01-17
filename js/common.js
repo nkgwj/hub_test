@@ -11,12 +11,18 @@ var projectsRef = mainRef.child("projects");
 var projectRef,nextIdRef,nodesRef;
 var project;
 var myId,parentId;
-//var childrenIds = [];
+var childrenIds = [];
 
 function listen(myId) {
-    //$("#myId").val(myId);
+    $("#myId").html(myId);
     parentId = Math.floor(myId / 2);
-    log("Your ID:" + myId + "\nParent ID:" + parentId);
+
+    if(parentId > 0){
+        $("#parentId").text(parentId);
+    } else {
+        $("#parentId").text("<*>").addClass("none");
+    }
+
     nextIdRef.set(myId + 1);
     nodesRef.child(myId).child("queue").on('child_added', function (snapshot) {
         var data = snapshot.val();

@@ -41,6 +41,8 @@ function acceptCall(offer, port,fromUser) {
             log("pc2 new binarytype = " + channel.binaryType);
 
             connections[fromUser].dataChannel = setupChannel(channel,myId,fromUser);
+            childrenIds.push(fromUser);
+            $("#childrenIds").text(childrenIds.join(" "));
 
             if (channel.readyState !== 0) {
                 log("*** pc2 no onopen??! possible race");
