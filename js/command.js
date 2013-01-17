@@ -9,9 +9,6 @@ var DataStore = (function () {
     DataStore.prototype.withdraw = function (size) {
         return this.repository.splice(0, size);
     };
-    DataStore.prototype.repository = function(){
-        return this.repository;
-    };
     return DataStore;
 })();
 
@@ -92,8 +89,6 @@ commands.intermediates = function(sender,json){
     } else {
         log("invalid intermediates" );
     }
-
-    console.log(json.intermediates);
 };
 
 commands.result = function(sender,json){
