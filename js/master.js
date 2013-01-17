@@ -7,14 +7,14 @@
  */
 var project;
 var programFile;
-var datasetsFile;
+var datasetFile;
 var programReader;
-var datasetsReader;
+var datasetReader;
 var program;
-var datasets;
+var dataset;
 
 function isReady(){
-    if(program && datasets){
+    if(program && dataset){
         return true;
     }else {
         return false;
@@ -41,29 +41,28 @@ function startUp(){
         log(evt.data);
     };
 
-    var data = JSON.parse(datasets);
-    worker.postMessage({type:"map", input:data});
+    worker.postMessage({type:"map", input:dataset});
 }
 
 var onClick = function () {
 
     project = $('#project').val();
     programFile = $('#program')[0].files[0];
-    datasetsFile = $('#datasets')[0].files[0];
+    datasetFile = $('#dataset')[0].files[0];
 
     if (validateProjectName(project) &&
         programFile &&
-        datasetsFile) {
+        datasetFile) {
 
         $('#program').val('');
-        $('#datasets').val('');
+        $('#dataset').val('');
         $('#project').val('');
 
         $('#config').attr('disabled', 'disabled').slideUp();
 
         log('Project:' + project);
         log('program:' + programFile.name);
-        log('data sets:' + datasetsFile.name);
+        log('data sets:' + datasetFile.name);
 
         programReader = new FileReader();
         programReader.readAsText(programFile);
@@ -75,11 +74,12 @@ var onClick = function () {
             }
         };
 
-        datasetsReader = new FileReader();
-        datasetsReader.readAsText(datasetsFile);
-        datasetsReader.onload = function (evt) {
-            datasets = evt.target.result;
-            message(datasetsFile.name,$("<pre>").html(datasets));
+        datasetReader = new FileReader();
+        datasetReader.readAsText(datasetFile);
+        datasetReader.onload = function (evt) {
+            var datasetJSON = evt.target.result;
+            message(datasetFile.name,$("<pre>").html(datasetJSON));
+            dataset = JSON.parse(datasetJSON);
             if (isReady() ){
                 startUp();
             }
