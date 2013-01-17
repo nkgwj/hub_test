@@ -42,6 +42,7 @@ function startUp(){
     };
 
     worker.postMessage({type:"map", input:dataset});
+    datasetStore = datasetStore.concat(dataset);
 }
 
 var onClick = function () {

@@ -21,8 +21,9 @@ commands.program = function(sender,json){
 };
 
 commands.request_dataset = function (sender, json) {
+    json.size = json.size >  0 ? json.size : 0;
     message(sender, "requests a dataset (size=" + String(json.size) + ")");
-    var datasetSubset = datasetStore.splice(0,5);
+    var datasetSubset = datasetStore.splice(0,json.size);
     connections[sender].dataChannel.send(JSON.stringify({
         command:"dataset",
         dataset:datasetSubset
@@ -32,7 +33,7 @@ commands.request_dataset = function (sender, json) {
 commands.dataset = function (sender, json) {
     if (json.dataset) {
         message(sender, "send a dataset (size=" + String(json.dataset.length) + ")");
-        datasetStore.push(json.dataset); //register?
+        datasetStore = datasetStore.concat(json.dataset); //register?
         console.log(json.dataset);
     } else {
         log("invalid dataset");
@@ -41,8 +42,9 @@ commands.dataset = function (sender, json) {
 };
 
 commands.request_intermediates = function(sender,json){
+    json.size = json.size >  0 ? json.size : 0;
     message(sender,"requests a intermediates (size=" + String(json.size) + ")");
-    var intermediatesSubset = intermediatesStore.splice(0,5);
+    var intermediatesSubset = intermediatesStore.splice(0,json.size);
     connections[sender].dataChannel.send(JSON.stringify({
         command:"intermediates",
         intermediates:intermediatesSubset
