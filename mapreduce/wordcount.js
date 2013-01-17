@@ -60,17 +60,15 @@ var MapReduce = (function () {
 
 var mapReduce = new MapReduce(mapReduceTask);
 
-
 self.onmessage = function(event){
     if(typeof event.data ==="object"){
         var msg = event.data;
         switch (msg.command){
             case "map":
                 if(msg.dataset){
-                    var intermediates = mapReduce.map(msg.dataset);
                     self.postMessage({
                        command:"intermediates",
-                       intermediates:intermediates
+                       intermediates:mapReduce.map(msg.dataset)
                     });
                 }
                 break;
