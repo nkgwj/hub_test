@@ -16,6 +16,47 @@ var DataStore = (function () {
 })();
 
 
+var KeyValueStore = (function () {
+    function KeyValueStore() {
+        this.repository = new Map;
+        this.iterator = this.repository.keys();
+    }
+
+    KeyValueStore.prototype.next = function(){
+        var iterator = this.iterator;
+        return iterator.next();
+    };
+
+    KeyValueStore.prototype.store = function (keyValueTable) {
+        for(var key in keyValueTable){
+            var value = keyValueTable[key];
+            console.log(key,value);
+            var list = this.repository.get(key) || [];
+            list = list.concat(value);
+            this.repository.set(key,list);
+        }
+        return this.repository;
+    };
+
+    KeyValueStore.prototype.withdraw = function (size) {
+        var list = [];
+        var numOfItem = Math.min(size,this.repository.size);
+        for (var i = 0; i < numOfItem; i++) {
+            var key = this.next();
+            var value = this.repository.get(key);
+            this.repository.delete(key);
+            list.push({key:key,value:value});
+        }
+        return list;
+
+    };
+
+    return KeyValueStore;
+})();
+
+
+
+
 var Sender = (function(){
     function Sender(id){
         this.id = id;
@@ -31,7 +72,7 @@ var Sender = (function(){
 
 var datasetStore = new DataStore();
 
-var intermediatesStore = new DataStore();
+var intermediatesStore = new KeyValueStore();
 
 var commands = {};
 

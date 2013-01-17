@@ -13,6 +13,9 @@ var datasetReader;
 var program;
 var dataset;
 
+var mapWorker;
+var reduceWorker;
+
 function isReady(){
     if(program && dataset){
         return true;
@@ -36,12 +39,30 @@ function startUp(){
     var blob = new Blob([program], {type:"text\/javascript"});
     var url = URL.createObjectURL(blob);
 
-    var worker = new Worker(url);
-    worker.onmessage = function (evt) {
-        log(evt.data);
+    mapWorker = new Worker(url);
+    mapWorker.onmessage = function (evt) {
+        var json = evt.data;
+        log(JSON.stringify(json));
+
+        switch (json.command) {
+            case "intermediates":
+                if (json.intermediates) {
+                    message("worker", "send a intermediates (size=" + String(json.intermediates.length) + ")");
+                    intermediatesStore.store(json.intermediates);
+                } else {
+                    log("invalid intermediates");
+                }
+                break;
+            default:
+                log("Invalid commands(worker)");
+        }
+
     };
 
-    worker.postMessage({command:"map", input:dataset});
+    mapWorker.postMessage({command:"map", dataset:dataset});
+
+
+
     datasetStore.store(dataset);
 }
 
