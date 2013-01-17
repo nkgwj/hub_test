@@ -1,5 +1,24 @@
-var datasetStore = [];
-var intermediatesStore = [];
+var DataStore = (function () {
+    function DataStore(dataArray) {
+        this.repository = dataArray || [];
+    }
+    DataStore.prototype.store = function (dataArray) {
+        this.repository = this.repository.concat(dataArray);
+        return this.repository;
+    };
+    DataStore.prototype.withdraw = function (size) {
+        return this.repository.splice(0, size);
+    };
+    DataStore.prototype.repository = function(){
+        return this.repository;
+    };
+    return DataStore;
+})();
+
+var datasetStore = new DataStore();
+
+var intermediatesStore = new DataStore();
+
 var commands = {};
 
 commands.request_program = function(sender,json){
@@ -23,7 +42,7 @@ commands.program = function(sender,json){
 commands.request_dataset = function (sender, json) {
     json.size = json.size >  0 ? json.size : 0;
     message(sender, "requests a dataset (size=" + String(json.size) + ")");
-    var datasetSubset = datasetStore.splice(0,json.size);
+    var datasetSubset = datasetStore.withdraw(json.size);
     connections[sender].dataChannel.send(JSON.stringify({
         command:"dataset",
         dataset:datasetSubset
@@ -33,7 +52,7 @@ commands.request_dataset = function (sender, json) {
 commands.dataset = function (sender, json) {
     if (json.dataset) {
         message(sender, "send a dataset (size=" + String(json.dataset.length) + ")");
-        datasetStore = datasetStore.concat(json.dataset); //register?
+        datasetStore.store(json.dataset);
         console.log(json.dataset);
     } else {
         log("invalid dataset");
@@ -44,7 +63,7 @@ commands.dataset = function (sender, json) {
 commands.request_intermediates = function(sender,json){
     json.size = json.size >  0 ? json.size : 0;
     message(sender,"requests a intermediates (size=" + String(json.size) + ")");
-    var intermediatesSubset = intermediatesStore.splice(0,json.size);
+    var intermediatesSubset = intermediatesStore.withdraw(json.size);
     connections[sender].dataChannel.send(JSON.stringify({
         command:"intermediates",
         intermediates:intermediatesSubset
@@ -55,7 +74,7 @@ commands.request_intermediates = function(sender,json){
 commands.intermediates = function(sender,json){
     if (json.intermediates) {
         message(sender,"send a intermediates (size=" + String(json.intermediates.length) + ")");
-        intermediatesStore.push(json.intermediates);
+        intermediatesStore.store(json.intermediates);
     } else {
         log("invalid intermediates" );
     }
