@@ -1,39 +1,59 @@
+var datasetStore = [];
+var intermediatesStore = [];
 var commands = {};
 
 commands.request_program = function(sender,json){
     message(sender,"requests a program");
+    connections[sender].dataChannel.send(JSON.stringify({
+        command:"program",
+        program:program
+    }));
 };
 
 commands.program = function(sender,json){
     if (json.program) {
         message(sender,"send a program (size=" + String(json.program.length) + ")");
+        program = json.program;
         console.log(json.program);
     } else {
         log("Invalid program");
     }
 };
 
-commands.request_datasets = function (sender, json) {
+commands.request_dataset = function (sender, json) {
     message(sender, "requests a dataset (size=" + String(json.size) + ")");
+    var datasetSubset = datasetStore.splice(0,5);
+    connections[sender].dataChannel.send(JSON.stringify({
+        command:"dataset",
+        dataset:datasetSubset
+    }));
 };
 
-commands.datasets = function (sender, json) {
-    if (json.datasets) {
-        message(sender, "send a dataset (size=" + String(json.datasets.length) + ")");
-        console.log(json.datasets);
+commands.dataset = function (sender, json) {
+    if (json.dataset) {
+        message(sender, "send a dataset (size=" + String(json.dataset.length) + ")");
+        datasetStore.push(json.dataset); //register?
+        console.log(json.dataset);
     } else {
-        log("invalid datasets");
+        log("invalid dataset");
     }
 
 };
 
 commands.request_intermediates = function(sender,json){
     message(sender,"requests a intermediates (size=" + String(json.size) + ")");
+    var intermediatesSubset = intermediatesStore.splice(0,5);
+    connections[sender].dataChannel.send(JSON.stringify({
+        command:"intermediates",
+        intermediates:intermediatesSubset
+    }));
+
 };
 
 commands.intermediates = function(sender,json){
     if (json.intermediates) {
         message(sender,"send a intermediates (size=" + String(json.intermediates.length) + ")");
+        intermediatesStore.push(json.intermediates);
     } else {
         log("invalid intermediates" );
     }
@@ -47,8 +67,8 @@ commands.result = function(sender,json){
 
 function commandDispatcher(cmd,sender,json){
     switch (cmd) {
-        case "request_datasets":
-        case "datasets":
+        case "request_dataset":
+        case "dataset":
         case "request_program":
         case "program":
         case "request_intermediates":
