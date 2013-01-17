@@ -15,6 +15,20 @@ var DataStore = (function () {
     return DataStore;
 })();
 
+
+var Sender = (function(){
+    function Sender(id){
+        this.id = id;
+        this.dataChannel = connections[id].dataChannel;
+    }
+    Sender.prototype.postMessage = function(str){
+        this.dataChannel.send(JSON.stringify(str))
+    };
+
+    return Sender;
+
+})();
+
 var datasetStore = new DataStore();
 
 var intermediatesStore = new DataStore();
@@ -22,16 +36,16 @@ var intermediatesStore = new DataStore();
 var commands = {};
 
 commands.request_program = function(sender,json){
-    message(sender,"requests a program");
-    connections[sender].dataChannel.send(JSON.stringify({
+    message(sender.id,"requests a program");
+    sender.postMessage({
         command:"program",
         program:program
-    }));
+    });
 };
 
 commands.program = function(sender,json){
     if (json.program) {
-        message(sender,"send a program (size=" + String(json.program.length) + ")");
+        message(sender.id,"send a program (size=" + String(json.program.length) + ")");
         program = json.program;
         console.log(json.program);
     } else {
@@ -41,17 +55,17 @@ commands.program = function(sender,json){
 
 commands.request_dataset = function (sender, json) {
     json.size = json.size >  0 ? json.size : 0;
-    message(sender, "requests a dataset (size=" + String(json.size) + ")");
+    message(sender.id, "requests a dataset (size=" + String(json.size) + ")");
     var datasetSubset = datasetStore.withdraw(json.size);
-    connections[sender].dataChannel.send(JSON.stringify({
+    sender.postMessage({
         command:"dataset",
         dataset:datasetSubset
-    }));
+    });
 };
 
 commands.dataset = function (sender, json) {
     if (json.dataset) {
-        message(sender, "send a dataset (size=" + String(json.dataset.length) + ")");
+        message(sender.id, "send a dataset (size=" + String(json.dataset.length) + ")");
         datasetStore.store(json.dataset);
         console.log(json.dataset);
     } else {
@@ -62,18 +76,18 @@ commands.dataset = function (sender, json) {
 
 commands.request_intermediates = function(sender,json){
     json.size = json.size >  0 ? json.size : 0;
-    message(sender,"requests a intermediates (size=" + String(json.size) + ")");
+    message(sender.id,"requests a intermediates (size=" + String(json.size) + ")");
     var intermediatesSubset = intermediatesStore.withdraw(json.size);
-    connections[sender].dataChannel.send(JSON.stringify({
+    sender.postMessage({
         command:"intermediates",
         intermediates:intermediatesSubset
-    }));
+    });
 
 };
 
 commands.intermediates = function(sender,json){
     if (json.intermediates) {
-        message(sender,"send a intermediates (size=" + String(json.intermediates.length) + ")");
+        message(sender.id,"send a intermediates (size=" + String(json.intermediates.length) + ")");
         intermediatesStore.store(json.intermediates);
     } else {
         log("invalid intermediates" );
@@ -83,7 +97,7 @@ commands.intermediates = function(sender,json){
 };
 
 commands.result = function(sender,json){
-    message(sender,"answer a result (result="+ String(json.result) + ")");
+    message(sender.id,"answer a result (result="+ String(json.result) + ")");
 };
 
 function commandDispatcher(cmd,sender,json){
@@ -96,7 +110,7 @@ function commandDispatcher(cmd,sender,json){
         case "intermediates":
         case "result":
             log(cmd);
-            commands[cmd](sender,json);
+            commands[cmd](new Sender(sender),json);
             break;
         default:
             log("unknown");
