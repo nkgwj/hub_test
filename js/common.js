@@ -14,6 +14,7 @@ var myId,parentId;
 //var childrenIds = [];
 
 function listen(myId) {
+    //$("#myId").val(myId);
     parentId = Math.floor(myId / 2);
     log("Your ID:" + myId + "\nParent ID:" + parentId);
     nextIdRef.set(myId + 1);
