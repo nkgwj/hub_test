@@ -45,13 +45,14 @@ var MapReduce = (function () {
         return intermediates;
     };
 
-    MapReduce.prototype.reduce = function(intermediate) {
+    MapReduce.prototype.reduce = function(intermediates) {
         var that = this;
-        for(var key in intermediate){
-            this.task.reduce(key,intermediate[key],function(key,value){
-                intermediate[key] = [value];
+        for(var key in intermediates){
+            this.task.reduce(key,intermediates[key],function(key,value){
+                intermediates[key] = [value];
             })
         }
+        return intermediates;
     };
 
     return MapReduce;
@@ -73,8 +74,12 @@ self.onmessage = function(event){
                 }
                 break;
             case "reduce":
-                if(msg.intermediate){
-                    mapReduce.reduce();
+                if(msg.intermediates){
+                    self.postMessage({
+
+                        command:"intermediates",
+                        intermediates:mapReduce.reduce(msg.intermediates)
+                    });
                 }
                 break;
             default:

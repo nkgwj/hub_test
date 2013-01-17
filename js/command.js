@@ -39,6 +39,7 @@ var KeyValueStore = (function () {
     };
 
     KeyValueStore.prototype.withdraw = function (size) {
+/*
         var list = [];
         var numOfItem = Math.min(size,this.repository.size);
         for (var i = 0; i < numOfItem; i++) {
@@ -48,7 +49,17 @@ var KeyValueStore = (function () {
             list.push({key:key,value:value});
         }
         return list;
+ */
 
+        var intermediates = {};
+        var numOfItem = Math.min(size, this.repository.size);
+        for (var i = 0; i < numOfItem; i++) {
+            var key = this.next();
+            var value = this.repository.get(key);
+            this.repository.delete(key);
+            intermediates[key] = value;
+        }
+        return intermediates;
     };
 
     return KeyValueStore;
