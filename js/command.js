@@ -2,13 +2,16 @@ var DataStore = (function () {
     function DataStore(dataArray) {
         this.repository = dataArray || [];
     }
+
     DataStore.prototype.store = function (dataArray) {
         this.repository = this.repository.concat(dataArray);
         return this.repository;
     };
+
     DataStore.prototype.withdraw = function (size) {
         return this.repository.splice(0, size);
     };
+
     return DataStore;
 })();
 
@@ -18,12 +21,12 @@ var Sender = (function(){
         this.id = id;
         this.dataChannel = connections[id].dataChannel;
     }
+
     Sender.prototype.postMessage = function(str){
         this.dataChannel.send(JSON.stringify(str))
     };
 
     return Sender;
-
 })();
 
 var datasetStore = new DataStore();
@@ -95,7 +98,7 @@ commands.result = function(sender,json){
     message(sender.id,"answer a result (result="+ String(json.result) + ")");
 };
 
-function commandDispatcher(cmd,sender,json){
+function commandDispatcher(cmd,senderId,json){
     switch (cmd) {
         case "request_dataset":
         case "dataset":
@@ -105,7 +108,7 @@ function commandDispatcher(cmd,sender,json){
         case "intermediates":
         case "result":
             log(cmd);
-            commands[cmd](new Sender(sender),json);
+            commands[cmd](new Sender(senderId),json);
             break;
         default:
             log("unknown");
