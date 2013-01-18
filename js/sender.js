@@ -21,6 +21,6 @@ var Sender = (function () {
     message.command = command;
     this.postMessage(message);
   };
-  
+
   return Sender;
 })();

@@ -1,12 +1,8 @@
-
 var commands = {};
 
 commands.request_program = function (sender, json) {
   message(sender.id, "requests a program");
-  sender.postMessage({
-    command:"program",
-    program:program
-  });
+  sender.command("program",{program:program});
 };
 
 commands.program = function (sender, json) {
@@ -23,10 +19,7 @@ commands.request_dataset = function (sender, json) {
   json.size = json.size > 0 ? json.size : 0;
   message(sender.id, "requests a dataset (size=" + String(json.size) + ")");
   var datasetSubset = datasetStore.withdraw(json.size);
-  sender.postMessage({
-    command:"dataset",
-    dataset:datasetSubset
-  });
+  sender.command("dataset",{dataset:datasetSubset});
 };
 
 commands.dataset = function (sender, json) {
@@ -44,10 +37,7 @@ commands.request_intermediates = function (sender, json) {
   json.size = json.size > 0 ? json.size : 0;
   message(sender.id, "requests a intermediates (size=" + String(json.size) + ")");
   var intermediatesSubset = intermediatesStore.withdraw(json.size);
-  sender.postMessage({
-    command:"intermediates",
-    intermediates:intermediatesSubset
-  });
+  sender.command("intermediates",{intermediates:intermediatesSubset});
 
 };
 
