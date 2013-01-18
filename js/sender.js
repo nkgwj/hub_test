@@ -16,5 +16,11 @@ var Sender = (function () {
     this.dataChannel.send(JSON.stringify(str))
   };
 
+  Sender.prototype.command = function(command,parameter) {
+    var message = typeof parameter === 'object' ? parameter : {};
+    message.command = command;
+    this.postMessage(message);
+  };
+  
   return Sender;
 })();
