@@ -5,6 +5,8 @@
  * Time: 14:38
  * To change this template use File | Settings | File Templates.
  */
+var datasetStore = new DataStore();
+var intermediatesStore = new KeyValueStore();
 
 var mainRef = new Firebase("https://rtc.firebaseio.com/hub_test_v1/");
 var projectsRef = mainRef.child("projects");
@@ -39,14 +41,13 @@ function listen(myId) {
   });
 }
 
-
 function checkFeature() {
   if (!navigator.mozGetUserMedia) {
-    error("Sorry, getUserMedia is not available! (Did you set media.navigator.enabled?)");
+    log("Sorry, getUserMedia is not available! (Did you set media.navigator.enabled?)");
     return false;
   }
   if (!window.mozRTCPeerConnection) {
-    error("Sorry, PeerConnection is not available! (Did you set media.peerconnection.enabled?)");
+    log("Sorry, PeerConnection is not available! (Did you set media.peerconnection.enabled?)");
     return false;
   }
   return true;
@@ -76,22 +77,9 @@ function log(msg) {
 }
 
 function error(e) {
-  console.log(e);
-  if (typeof e === typeof {}) {
-    alert("Oh no! " + JSON.stringify(e));
-  } else {
-    alert("Oh no! " + e);
-  }
   endCall();
 }
 
 function validateProjectName(projectName) {
-  if (typeof projectName !== 'string') {
-    return false;
-  }
-
-  if (projectName == "") {
-    return false;
-  }
-  return true;
+  return (typeof projectName === 'string' && projectName != "");
 }

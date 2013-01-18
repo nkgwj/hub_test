@@ -18,9 +18,15 @@ function onremovedproject(removedProject) {
 projectsRef.on('child_added', onaddedproject);
 projectsRef.on('child_removed', onremovedproject);
 
-function onjoin() {
-  var projectName = $("#project").val();
-  if (validateProjectName(projectName)) {
+
+$(function () {
+  var join = function (projectName) {
+
+    if (!validateProjectName(projectName)) {
+      log("error");
+      return;
+    }
+
     project = projectName;
     log("project:" + project);
 
@@ -43,11 +49,9 @@ function onjoin() {
       });
       initiateCall();
     });
-  } else {
-    log("error");
-  }
-}
+  };
 
-$(function () {
-  $("#join").click(onjoin);
+  $("#join").click(function (){
+    join($("#project").val());
+  });
 });
