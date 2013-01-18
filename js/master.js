@@ -7,9 +7,8 @@
  */
 
 var project;
-var program,dataset;
+var dataset;
 
-//var mapReduceWorker;
 var mapReduceAgent;
 
 $(function () {

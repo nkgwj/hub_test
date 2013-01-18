@@ -42,11 +42,11 @@ function listen(myId) {
 
 function checkFeature() {
   if (!navigator.mozGetUserMedia) {
-    log("Sorry, getUserMedia is not available! (Did you set media.navigator.enabled?)");
+    log("getUserMedia not supported.");
     return false;
   }
   if (!window.mozRTCPeerConnection) {
-    log("Sorry, PeerConnection is not available! (Did you set media.peerconnection.enabled?)");
+    log("PeerConnection not supported.");
     return false;
   }
   return true;
@@ -76,7 +76,7 @@ function log(msg) {
 }
 
 function error() {
-  log("Ending call");
+  log("Error");
 }
 
 function validateProjectName(projectName) {
