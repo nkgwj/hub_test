@@ -7,80 +7,78 @@
  */
 
 var project;
-var program;
-var dataset;
+var program,dataset;
 
-var mapReduceWorker;
-var mapReduceAgent;
+var mapReduceWorker,mapReduceAgent;
 
+$(function () {
 
-$(function (){
-    var startUp = function (){
-        projectRef = projectsRef.child(project);
-        projectRef.removeOnDisconnect();
+  var startUp = function () {
+    projectRef = projectsRef.child(project);
+    projectRef.removeOnDisconnect();
 
-        nextIdRef = projectRef.child("nextId");
-        nodesRef = projectRef.child("nodes");
+    nextIdRef = projectRef.child("nextId");
+    nodesRef = projectRef.child("nodes");
 
-        myId = 1;
-        nodesRef.remove(function(){
-            listen(myId);
-        });
+    myId = 1;
+    nodesRef.remove(function () {
+      listen(myId);
+    });
 
-        datasetStore.store(dataset);
+    datasetStore.store(dataset);
 
-        mapReduceWorker = new MapReduceWorker(program);
-        mapReduceAgent = new MapReduceAgent(mapReduceWorker,datasetStore,intermediatesStore);
+    mapReduceWorker = new MapReduceWorker(program);
+    mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
 
-        mapReduceAgent.map(dataset.length);
-    };
+    mapReduceAgent.map(dataset.length);
+  };
 
-    var setUp = function () {
-        var programFile;
-        var datasetFile;
-        var programReader;
-        var datasetReader;
+  var setUp = function () {
+    var programFile;
+    var datasetFile;
+    var programReader;
+    var datasetReader;
 
-        project = $('#project').val();
-        programFile = $('#program')[0].files[0];
-        datasetFile = $('#dataset')[0].files[0];
+    project = $('#project').val();
+    programFile = $('#program')[0].files[0];
+    datasetFile = $('#dataset')[0].files[0];
 
-        if (validateProjectName(project) &&
-            programFile && datasetFile) {
+    if (validateProjectName(project) &&
+      programFile && datasetFile) {
 
-            $("#program,#dataset,#project").val('');
+      $("#program,#dataset,#project").val('');
 
-            $('#config').attr('disabled', 'disabled').slideUp();
+      $('#config').attr('disabled', 'disabled').slideUp();
 
-            log('Project:' + project);
-            log('program:' + programFile.name);
-            log('data sets:' + datasetFile.name);
+      log('Project:' + project);
+      log('program:' + programFile.name);
+      log('data sets:' + datasetFile.name);
 
-            programReader = new FileReader();
-            programReader.readAsText(programFile);
-            programReader.onload = function (evt) {
-                program = evt.target.result;
-                message(programFile.name,$("<pre>").html(program));
+      programReader = new FileReader();
+      programReader.readAsText(programFile);
+      programReader.onload = function (evt) {
+        program = evt.target.result;
+        message(programFile.name, $("<pre>").html(program));
 
-                if (program && dataset ){
-                    startUp();
-                }
-            };
-
-            datasetReader = new FileReader();
-            datasetReader.readAsText(datasetFile);
-            datasetReader.onload = function (evt) {
-                var datasetJSON = evt.target.result;
-                message(datasetFile.name,$("<pre>").html(datasetJSON));
-                dataset = JSON.parse(datasetJSON);
-
-                if (program && dataset){
-                    startUp();
-                }
-            };
+        if (program && dataset) {
+          startUp();
         }
-    };
+      };
 
-    $("#setup").click(setUp);
+      datasetReader = new FileReader();
+      datasetReader.readAsText(datasetFile);
+      datasetReader.onload = function (evt) {
+        var datasetJSON = evt.target.result;
+        message(datasetFile.name, $("<pre>").html(datasetJSON));
+        dataset = JSON.parse(datasetJSON);
+
+        if (program && dataset) {
+          startUp();
+        }
+      };
+    }
+  };
+
+  $("#setup").click(setUp);
 
 });

@@ -5,49 +5,49 @@
  * Time: 18:22
  * To change this template use File | Settings | File Templates.
  */
-function onaddedproject (addedProject) {
-    var option = $("<option>").attr("value",addedProject.name()).html(addedProject.name());
-    $("#project").append(option);
+function onaddedproject(addedProject) {
+  var option = $("<option>").attr("value", addedProject.name()).html(addedProject.name());
+  $("#project").append(option);
 }
 
 function onremovedproject(removedProject) {
-    var selector = 'option[value="' + removedProject.name() + '"]';
-    $(selector).remove();
+  var selector = 'option[value="' + removedProject.name() + '"]';
+  $(selector).remove();
 }
 
-projectsRef.on('child_added',onaddedproject );
-projectsRef.on('child_removed',onremovedproject);
+projectsRef.on('child_added', onaddedproject);
+projectsRef.on('child_removed', onremovedproject);
 
-function onjoin(){
-    var projectName = $("#project").val();
-    if(validateProjectName(projectName)){
-        project = projectName;
-        log("project:" + project);
+function onjoin() {
+  var projectName = $("#project").val();
+  if (validateProjectName(projectName)) {
+    project = projectName;
+    log("project:" + project);
 
-        projectsRef.off('child_added',onaddedproject );
-        projectsRef.off('child_removed',onremovedproject);
+    projectsRef.off('child_added', onaddedproject);
+    projectsRef.off('child_removed', onremovedproject);
 
-        $('#config').attr('disabled', 'disabled').slideUp();
-        projectRef = projectsRef.child(project);
-        projectRef.removeOnDisconnect();
+    $('#config').attr('disabled', 'disabled').slideUp();
+    projectRef = projectsRef.child(project);
+    projectRef.removeOnDisconnect();
 
-        nextIdRef = projectRef.child("nextId");
-        nodesRef = projectRef.child("nodes");
+    nextIdRef = projectRef.child("nextId");
+    nodesRef = projectRef.child("nodes");
 
-        nextIdRef.once('value', function (snapshot) {
-            myId = snapshot.val();
-            listen(myId);
-            nodesRef.child(parentId).child("queue").push({
-                type:"request",
-                sender:myId
-            });
-            initiateCall();
-        });
-    } else {
-        log("error");
-    }
+    nextIdRef.once('value', function (snapshot) {
+      myId = snapshot.val();
+      listen(myId);
+      nodesRef.child(parentId).child("queue").push({
+        type:"request",
+        sender:myId
+      });
+      initiateCall();
+    });
+  } else {
+    log("error");
+  }
 }
 
-$(function(){
+$(function () {
   $("#join").click(onjoin);
 });

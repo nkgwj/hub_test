@@ -7,23 +7,23 @@
  */
 
 var MapReduceAgent = (function () {
-    function MapReduceAgent(worker, datasetStore, intermediatesStore) {
-        this.worker = worker;
-        this.datasetStore = datasetStore;
-        this.intermediatesStore = intermediatesStore;
-    }
+  function MapReduceAgent(worker, datasetStore, intermediatesStore) {
+    this.worker = worker;
+    this.datasetStore = datasetStore;
+    this.intermediatesStore = intermediatesStore;
+  }
 
-    MapReduceAgent.prototype.map = function (size) {
-        var subset = this.datasetStore.withdraw(size);
-        mapReduceWorker.map(subset);
-        return subset.size;
-    };
+  MapReduceAgent.prototype.map = function (size) {
+    var subset = this.datasetStore.withdraw(size);
+    mapReduceWorker.map(subset);
+    return subset.size;
+  };
 
-    MapReduceAgent.prototype.reduce = function (size) {
-        var subset = this.intermediatesStore.withdraw(size);
-        mapReduceWorker.reduce(subset);
-        return subset.size;
-    };
+  MapReduceAgent.prototype.reduce = function (size) {
+    var subset = this.intermediatesStore.withdraw(size);
+    mapReduceWorker.reduce(subset);
+    return subset.size;
+  };
 
-    return MapReduceAgent;
+  return MapReduceAgent;
 })();
