@@ -6,8 +6,6 @@
  * To change this template use File | Settings | File Templates.
  */
 
-
-
 var MapReduceWorker = (function () {
     function MapReduceWorker(mapProgram, reduceProgram) {
         var createProgramObjectURL = function(sourceCode){
@@ -55,22 +53,21 @@ var MapReduceAgent = (function () {
         this.datasetStore = datasetStore;
         this.intermediatesStore = intermediatesStore;
     }
+
     MapReduceAgent.prototype.map = function (size) {
-        var subset = datasetStore.withdraw(size);
+        var subset = this.datasetStore.withdraw(size);
         mapReduceWorker.map(subset);
         return subset.size;
     };
 
     MapReduceAgent.prototype.reduce = function (size) {
-        var subset = intermediatesStore.withdraw(size);
+        var subset = this.intermediatesStore.withdraw(size);
         mapReduceWorker.reduce(subset);
         return subset.size;
     };
 
     return MapReduceAgent;
 })();
-
-
 
 var project;
 var programFile;
@@ -79,9 +76,6 @@ var programReader;
 var datasetReader;
 var program;
 var dataset;
-
-var mapWorker; // to remove
-var reduceWorker; // to remove
 
 var mapReduceWorker;
 var mapReduceAgent;
@@ -109,7 +103,7 @@ function startUp(){
     datasetStore.store(dataset);
 
     mapReduceWorker = new MapReduceWorker(program);
-    mapReduceAgent = new MapReduceAgent(mapReduceWorker);
+    mapReduceAgent = new MapReduceAgent(mapReduceWorker,datasetStore,intermediatesStore);
 
     mapReduceAgent.map(dataset.length);
 }
