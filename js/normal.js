@@ -28,7 +28,7 @@ $(function () {
     }
 
     project = projectName;
-    log("project:" + project);
+    log("Project:" + project);
 
     projectsRef.off('child_added', onaddedproject);
     projectsRef.off('child_removed', onremovedproject);
@@ -47,7 +47,7 @@ $(function () {
         type:"request",
         sender:myId
       });
-      initiateCall();
+      initiatePeerConnection();
     });
   };
 

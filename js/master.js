@@ -52,8 +52,8 @@ $(function () {
       $('#config').attr('disabled', 'disabled').slideUp();
 
       log('Project:' + project);
-      log('program:' + programFile.name);
-      log('data sets:' + datasetFile.name);
+      log('Program:' + programFile.name);
+      log('DataSet:' + datasetFile.name);
 
       programReader = new FileReader();
       programReader.readAsText(programFile);
