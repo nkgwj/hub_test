@@ -71,8 +71,8 @@ function incomingOffer(offer, port, fromUser) {
 function setupDataChannel(channel, localPC, remotePC) {
   channel.onerror = error;
 
-  channel.onmessage = function (evt) {
-    var data = evt.data;
+  channel.onmessage = function (event) {
+    var data = event.data;
     if (typeof data !== 'string') {
       return;
     }
