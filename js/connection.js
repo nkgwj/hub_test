@@ -17,7 +17,7 @@ function incomingAnswer(answer, port, fromUser) {
     setTimeout(function () {
       pc.connectDataConnection(connection.offererPort, connection.answererPort);
       log("connectDataConnection(" + connection.offererPort + "," + connection.answererPort + ")");
-    }, 3000);
+    }, 500); //3000 -> 500
   }, error);
 }
 
@@ -79,7 +79,7 @@ function acceptCall(offer, port, fromUser) {
           setTimeout(function () {
             pc.connectDataConnection(connections[fromUser].answererPort, connections[fromUser].offererPort);
             log("connectDataConnection(" + connections[fromUser].answererPort + "," + connections[fromUser].offererPort + ")");
-          }, 3000);
+          }, 500); //3000 -> 500
         }, error);
       }, error);
     }, error);
