@@ -61,9 +61,6 @@ var KeyValueStore = (function () {
     return KeyValueStore;
 })();
 
-
-
-
 var Sender = (function(){
     function Sender(id){
         this.id = id;

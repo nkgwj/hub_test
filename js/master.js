@@ -5,6 +5,9 @@
  * Time: 18:22
  * To change this template use File | Settings | File Templates.
  */
+
+
+
 var MapReduceWorker = (function () {
     function MapReduceWorker(mapProgram, reduceProgram) {
         var createProgramObjectURL = function(sourceCode){
@@ -46,6 +49,29 @@ var MapReduceWorker = (function () {
     return MapReduceWorker;
 })();
 
+var MapReduceAgent = (function () {
+    function MapReduceAgent(worker, datasetStore, intermediatesStore) {
+        this.worker = worker;
+        this.datasetStore = datasetStore;
+        this.intermediatesStore = intermediatesStore;
+    }
+    MapReduceAgent.prototype.map = function (size) {
+        var subset = datasetStore.withdraw(size);
+        mapReduceWorker.map(subset);
+        return subset.size;
+    };
+
+    MapReduceAgent.prototype.reduce = function (size) {
+        var subset = intermediatesStore.withdraw(size);
+        mapReduceWorker.reduce(subset);
+        return subset.size;
+    };
+
+    return MapReduceAgent;
+})();
+
+
+
 var project;
 var programFile;
 var datasetFile;
@@ -54,10 +80,11 @@ var datasetReader;
 var program;
 var dataset;
 
-var mapWorker;
-var reduceWorker;
+var mapWorker; // to remove
+var reduceWorker; // to remove
 
 var mapReduceWorker;
+var mapReduceAgent;
 
 function isReady(){
     if(program && dataset){
@@ -79,15 +106,16 @@ function startUp(){
         listen(myId);
     });
 
-    mapReduceWorker = new MapReduceWorker(program);
-
-    var subsetDataset = dataset;
-    mapReduceWorker.map(subsetDataset);
     datasetStore.store(dataset);
+
+    mapReduceWorker = new MapReduceWorker(program);
+    mapReduceAgent = new MapReduceAgent(mapReduceWorker);
+
+    mapReduceAgent.map(dataset.length);
 }
 
-var onClick = function () {
 
+var onClick = function () {
     project = $('#project').val();
     programFile = $('#program')[0].files[0];
     datasetFile = $('#dataset')[0].files[0];
@@ -96,7 +124,7 @@ var onClick = function () {
         programFile &&
         datasetFile) {
 
-        $('#program').val('');
+        $('#program').val(''); // matomeru
         $('#dataset').val('');
         $('#project').val('');
 
