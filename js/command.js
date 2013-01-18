@@ -19,12 +19,10 @@ var DataStore = (function () {
 var KeyValueStore = (function () {
     function KeyValueStore() {
         this.repository = new Map;
-        this.iterator = this.repository.keys();
     }
 
-    KeyValueStore.prototype.next = function(){
-        var iterator = this.iterator;
-        return iterator.next();
+    KeyValueStore.prototype.iterator = function(){
+        return this.repository.keys();
     };
 
     KeyValueStore.prototype.store = function (keyValueTable) {
@@ -39,16 +37,25 @@ var KeyValueStore = (function () {
     };
 
     KeyValueStore.prototype.withdraw = function (size) {
+        var isAllReduced = true;
+        var iterator = this.iterator();
 
         var intermediates = {};
-        var numOfItem = Math.min(size, this.repository.size);
-        for (var i = 0; i < numOfItem; i++) {
-            var key = this.next();
+        for (var i = 0; i < size && i < this.repository.size; i++) {
+            var key = iterator.next();
             var value = this.repository.get(key);
-            this.repository.delete(key);
-            intermediates[key] = value;
+            if (value.length === 1){
+                size++;
+            } else {
+                isAllReduced = false;
+                this.repository.delete(key);
+                intermediates[key] = value;
+            }
         }
-        return intermediates;
+
+        this.isAllReduced = isAllReduced;
+
+        return intermediates; // if(isAllReduced === false) return null
     };
 
     return KeyValueStore;

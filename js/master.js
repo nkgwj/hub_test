@@ -14,7 +14,7 @@ var program;
 var dataset;
 
 var mapWorker;
-var reduceWorker;
+
 
 function isReady(){
     if(program && dataset){
@@ -22,6 +22,10 @@ function isReady(){
     }else {
         return false;
     }
+}
+
+function map(subsetDataset) {
+    mapWorker.postMessage({command:"map", dataset:subsetDataset});
 }
 
 function startUp(){
@@ -56,13 +60,10 @@ function startUp(){
             default:
                 log("Invalid commands(worker)");
         }
-
     };
 
-    mapWorker.postMessage({command:"map", dataset:dataset});
-
-
-
+    var subsetDataset = dataset;
+    map(subsetDataset);
     datasetStore.store(dataset);
 }
 
