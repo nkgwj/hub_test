@@ -27,6 +27,9 @@ function isReady(){
 function map(subsetDataset) {
     mapWorker.postMessage({command:"map", dataset:subsetDataset});
 }
+function reduce(subsetIntermediates){
+    mapWorker.postMessage({command:"reduce",intermediates:subsetIntermediates});
+}
 
 function startUp(){
     projectRef = projectsRef.child(project);
