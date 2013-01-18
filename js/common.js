@@ -28,7 +28,6 @@ function listen(myId) {
   nextIdRef.set(myId + 1);
   nodesRef.child(myId).child("queue").on('child_added', function (snapshot) {
     var data = snapshot.val();
-    log(JSON.stringify(data));
     snapshot.ref().remove();
     switch (data.type) {
       case "offer":
@@ -76,8 +75,8 @@ function log(msg) {
   $("#log").prepend($("<p>").addClass("system-log").html(Array.apply(null, arguments).join("")));
 }
 
-function error(e) {
-  endCall();
+function error() {
+  log("Ending call");
 }
 
 function validateProjectName(projectName) {

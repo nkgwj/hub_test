@@ -1,9 +1,5 @@
 var connections = {};
 
-function incomingOffer(offer, port, fromUser) {
-  acceptCall(offer, port, fromUser);
-}
-
 function incomingAnswer(answer, port, fromUser) {
   connections[fromUser].answererPort = port || 5001;
   var connection = connections[fromUser];
@@ -11,9 +7,9 @@ function incomingAnswer(answer, port, fromUser) {
   var pc = connection.peerConnection;
 
   pc.setRemoteDescription(JSON.parse(answer), function () {
-    log("Recieved answer" + sdpbox(JSON.parse(answer).sdp));
+    log("Recieved answer"); // + sdpbox(JSON.parse(answer).sdp));
 
-    log("sdp negotiation finished");
+    log("[SDP Negotiation Completed]");
     setTimeout(function () {
       pc.connectDataConnection(connection.offererPort, connection.answererPort);
       log("connectDataConnection(" + connection.offererPort + "," + connection.answererPort + ")");
@@ -21,27 +17,22 @@ function incomingAnswer(answer, port, fromUser) {
   }, error);
 }
 
-function acceptCall(offer, port, fromUser) {
-  log("Incoming call with offer" + sdpbox(JSON.parse(offer).sdp));
+function incomingOffer(offer, port, fromUser) {
   connections[fromUser] = {};
 
   connections[fromUser].offererPort = port || 5000;
 
-  navigator.mozGetUserMedia({audio:true, fake:true}, function (as) {
+  navigator.mozGetUserMedia({audio:true, fake:true}, function (audioStream) {
 
     var pc = new mozRTCPeerConnection();
-    pc.addStream(as);
+    pc.addStream(audioStream);
 
     pc.ondatachannel = function (channel) {
-      log("pc2 onDataChannel = " + channel + ", label='" + channel.label + "'");
-      log("pc2 created channel " + channel + " binarytype = " + channel.binaryType);
-
-      channel.binaryType = "blob";
-
-      log("pc2 new binarytype = " + channel.binaryType);
+      log("DataChannel(label=" + channel.label + ")");
 
       connections[fromUser].dataChannel = setupChannel(channel, myId, fromUser);
       childrenIds.push(fromUser);
+
       $("#childrenIds").text(childrenIds.join(" "));
 
       if (channel.readyState !== 0) {
@@ -53,16 +44,16 @@ function acceptCall(offer, port, fromUser) {
     pc.onaddstream = onaddstream;
 
     pc.onconnection = function () {
-      log("pc2 onconnection");
+      log("[Connected]");
     };
 
     pc.setRemoteDescription(JSON.parse(offer), function () {
-      log("setRemoteDescription, creating answer");
-
+      log("Received offer");
       pc.createAnswer(function (answer) {
+        log("Created answer")//+ sdpbox(answer.sdp))
         pc.setLocalDescription(answer, function () {
-          // Send answer to remote end.
-          log("created Answer and setLocalDescription " + sdpbox(answer.sdp));
+
+          log("Sending:local -[answer]-> remote");// + sdpbox(JSON.parse(offer).sdp));
           connections[fromUser].peerConnection = pc;
           connections[fromUser].answererPort = connections[fromUser].offererPort + 1;
           var toSend = {
@@ -72,9 +63,7 @@ function acceptCall(offer, port, fromUser) {
             answer:JSON.stringify(answer)
           };
 
-          log(toSend);
           nodesRef.child(fromUser).child("queue").push(toSend);
-          log("--tosend--");
 
           setTimeout(function () {
             pc.connectDataConnection(connections[fromUser].answererPort, connections[fromUser].offererPort);
@@ -84,40 +73,32 @@ function acceptCall(offer, port, fromUser) {
       }, error);
     }, error);
   }, error);
-
 }
-
 
 function setupChannel(channel, localPC, remotePC) {
   channel.onerror = error;
   channel.onmessage = function (evt) {
     var data = evt.data;
-    if (data instanceof Blob) {
-      log("file from ", remotePC, " ,length=", data.size);
+    if (typeof data !== 'string') {
+      return;
+    }
 
-      var objectURL = window.URL.createObjectURL(data);
-      message(remotePC, " sent Blob: <a href='" + objectURL + "'>[File]</a>, type=" + data.type + ", length=" + data.size);
-      console.dir(data);
+    log("message from", remotePC, " length=", data.length);
+    message(remotePC, data);
 
-    } else {
-      log("message from", remotePC, " length=", data.length);
-      message(remotePC, data);
-
-      var json = JSON.parse(data);
-      if (typeof json === "object" && json.command) {
-        commandDispatcher(json.command, remotePC, json);
-      }
+    var json = JSON.parse(data);
+    if (typeof json === "object" && json.command) {
+      commandDispatcher(json.command, remotePC, json);
     }
   };
 
   channel.onopen = function () {
-    log(localPC + " onopen fired for " + channel);
-    log(localPC + "state: " + channel.state);
+    log("DataChannel opened for (label=" + channel.label+"):" + channel.readyState);
   };
   channel.onclose = function () {
-    log(localPC + " onclosed fired");
+    log("DataChannel closed for (label=" + channel.label+"):" + channel.readyState);
   };
-  log(localPC + " state:" + channel.readyState);
+  log(localPC + " DataChannel:" + channel.readyState);
   return channel;
 }
 
@@ -130,27 +111,23 @@ function initiateCall() {
 
   connections[parentId] = {};
 
-  navigator.mozGetUserMedia({audio:true, fake:true}, function (as) {
-    console.log("gotMedia", as);
-
-    log("gotMedia");
+  navigator.mozGetUserMedia({audio:true, fake:true}, function (audioStream) {
+    log("got fakeStream");
 
     var pc = new mozRTCPeerConnection();
 
-    pc.addStream(as);
+    pc.addStream(audioStream);
 
     pc.onaddstream = onaddstream;
 
     pc.onconnection = function () {
-      log("pc1 onconnection");
-
-      var channel = pc.createDataChannel("This is pc1", {}); // reliable (TCP-like)
-
+      log("[Connected]");
+      var channel = pc.createDataChannel(String(myId), {});
       connections[parentId].dataChannel = setupChannel(channel, myId, parentId, "Hello out there.");
     };
 
     pc.ondatachannel = function (channel) {
-      log("pc onDataChannel = " + channel + ", label='" + channel.label + "'");
+      log("DataChannel(label=" + channel.label + ")");
       connections[parentId].dataChannel = channel;
 
       if (setupChannel(channel, myId, parentId).readyState !== 0) {
@@ -159,12 +136,10 @@ function initiateCall() {
     };
 
     pc.createOffer(function (offer) {
-      log("Created offer" + sdpbox(offer.sdp));
-      console.log(offer.sdp);
-      pc.setLocalDescription(offer, function () {
-        // Send offer to remote end.
-        log("setLocalDescription, sending to remote");
+      log("Created offer");// + sdpbox(offer.sdp));
 
+      pc.setLocalDescription(offer, function () {
+        log("Sending:local -[offer]-> remote");
 
         connections[parentId].peerConnection = pc;
         connections[parentId].offererPort = Math.floor(Math.random() * 5000) * 2;
@@ -180,10 +155,6 @@ function initiateCall() {
       }, error);
     }, error);
   }, error);
-}
-
-function endCall() {
-  log("Ending call");
 }
 
 if (checkFeature()) {
