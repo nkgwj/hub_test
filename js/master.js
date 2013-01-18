@@ -14,7 +14,7 @@ var program;
 var dataset;
 
 var mapWorker;
-
+var reduceWorker;
 
 function isReady(){
     if(program && dataset){
@@ -28,7 +28,7 @@ function map(subsetDataset) {
     mapWorker.postMessage({command:"map", dataset:subsetDataset});
 }
 function reduce(subsetIntermediates){
-    mapWorker.postMessage({command:"reduce",intermediates:subsetIntermediates});
+    reduceWorker.postMessage({command:"reduce",intermediates:subsetIntermediates});
 }
 
 function startUp(){
@@ -47,7 +47,9 @@ function startUp(){
     var url = URL.createObjectURL(blob);
 
     mapWorker = new Worker(url);
-    mapWorker.onmessage = function (evt) {
+    reduceWorker = new Worker(url);
+
+    mapWorker.onmessage = reduceWorker.onmessage = function (evt) {
         var json = evt.data;
         log(JSON.stringify(json));
 
@@ -64,6 +66,8 @@ function startUp(){
                 log("Invalid commands(worker)");
         }
     };
+
+
 
     var subsetDataset = dataset;
     map(subsetDataset);
