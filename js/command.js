@@ -85,10 +85,14 @@ commands.result = function (sender, json) {
 };
 
 function broadcastCommand(cmd, json) {
-  var length = childrenIds.length;
+/*  var length = childrenIds.length;
   for (var i = 0; i < length; i++) {
     (new Sender(childrenIds[i])).command(cmd, json);
   }
+  */
+  childrenIds.forEach(function (id) {
+    (new Sender(id)).command(cmd, json);
+  });
 }
 
 function commandRelay(cmd, sender, json, direction) {
@@ -133,6 +137,4 @@ function commandDispatcher(cmd, senderId, json) {
     default:
       log("unknown");
   }
-
-
 }
