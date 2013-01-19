@@ -41,6 +41,13 @@ function listen(myId) {
     }
   });
 }
+function isLeaf() {
+  return childrenIds.length === 0;
+}
+
+function isRoot() {
+  return parentId === 0;
+}
 
 function checkFeature() {
   if (!navigator.mozGetUserMedia) {

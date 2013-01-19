@@ -60,14 +60,6 @@ commands.result = function (sender, json) {
   message(sender.id, "answer a result (result=" + String(json.result) + ")");
 };
 
-function isLeaf() {
-  return childrenIds.length === 0;
-}
-
-function isRoot() {
-  return parentId === 0;
-}
-
 function broadcastCommand(cmd, json) {
   var length = childrenIds.length;
   for (var i = 0; i < length; i++) {
