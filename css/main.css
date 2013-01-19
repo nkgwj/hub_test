@@ -73,14 +73,14 @@ textarea.sdp {
     color:hotpink;
 }
 
-
-#program-status {
-    width:2em;
+#controller {
+    display: none;
 }
 
-#map-size,
-#reduce-size,
-#rise-size {
-    width: 5em;
+#controller > input {
+    width: 4em;
 }
 
+#controller > #program-status {
+    width: 2em;
+}

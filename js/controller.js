@@ -9,7 +9,7 @@
 $(function () {
   $("#btn-program").click(
     function () {
-      broadcastCommand("program",{program:program,"relay":downward});
+      broadcastCommand("program",{program:program,"relay":"downward"});
       log("not implemented:"+$("#program-status").val());
     }
   );
@@ -28,6 +28,13 @@ $(function () {
     }
   );
 
+  $("#btn-dataset").click(
+    function () {
+      var size = Number($("#dataset-size").val());
+      (new Sender(parentId)).command("request_dataset",{size:size});
+    }
+  );
+
   $("#btn-rise").click(
     function () {
       var size = Number($("#rise-size").val());
@@ -36,6 +43,8 @@ $(function () {
       sender.command("intermediates", {intermediates:subset});
     }
   );
+
+
 });
 
 

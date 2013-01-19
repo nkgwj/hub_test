@@ -28,7 +28,6 @@ $(function () {
     mapReduceWorker = new MapReduceWorker(program);
     mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
 
-    //mapReduceAgent.map(dataset.length);
   };
 
   var setUp = function () {
