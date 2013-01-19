@@ -9,7 +9,7 @@
 $(function () {
   $("#btn-program").click(
     function () {
-      //broadcastCommand("program",{program:program});
+      broadcastCommand("program",{program:program});
       log("not implemented:"+$("#program-status").val());
     }
   );
