@@ -9,7 +9,7 @@
 $(function () {
   $("#btn-program").click(
     function () {
-      broadcastCommand("program",{program:program});
+      broadcastCommand("program",{program:program,"relay":downward});
       log("not implemented:"+$("#program-status").val());
     }
   );
