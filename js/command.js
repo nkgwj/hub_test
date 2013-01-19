@@ -16,9 +16,33 @@ commands.program = function (sender, json) {
     mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
     console.log(mapReduceAgent);
 
+    if(isLeaf()){
+      (new Sender(parentId)).command("program_ready");
+    }
+
   } else {
     log("Invalid program");
   }
+};
+
+commands.program_ready = function(sender,json){
+
+  connections[sender.id].program_ready = true;
+
+  var isAllChildrenProgramReady = function(){
+
+    return childrenIds.map(function(id){
+      return connections[id].program_ready
+    }).reduce(function(a,b){
+      return a && b;
+    });
+
+  };
+
+  if(isAllChildrenProgramReady){
+    (new Sender(parentId)).command("program_ready");
+  }
+
 };
 
 commands.request_dataset = function (sender, json) {
