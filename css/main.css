@@ -1,3 +1,7 @@
+header {
+    margin:1em;
+}
+
 textarea.sdp {
     min-width:640px;
     min-height:10em;
@@ -28,7 +32,7 @@ textarea.sdp {
 }
 
 #id-info {
-    border-radius: 5px;        /* CSS3草案 */
+    border-radius: 5px;
     border:solid 2px gray;
 }
 
@@ -55,10 +59,7 @@ textarea.sdp {
     text-align: center;
 }
 
-#myId {
-    width:3em;
-}
-
+#myId,
 #parentId{
     width:3em;
 }
@@ -67,9 +68,19 @@ textarea.sdp {
     width:5em;
 }
 
-header {
-    margin:1em;
-}
+
 #id-info > dd.none {
     color:hotpink;
 }
+
+
+#program-status {
+    width:2em;
+}
+
+#map-size,
+#reduce-size,
+#rise-size {
+    width: 5em;
+}
+

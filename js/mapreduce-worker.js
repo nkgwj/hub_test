@@ -40,7 +40,7 @@ var MapReduceWorker = (function () {
     this.mapWorker.postMessage({command:"map", dataset:subsetDataset});
   };
 
-  MapReduceWorker.prototype.reduce = function reduce(subsetIntermediates) {
+  MapReduceWorker.prototype.reduce = function (subsetIntermediates) {
     this.reduceWorker.postMessage({command:"reduce", intermediates:subsetIntermediates});
   };
 

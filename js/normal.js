@@ -5,21 +5,18 @@
  * Time: 18:22
  * To change this template use File | Settings | File Templates.
  */
-function onaddedproject(addedProject) {
-  var option = $("<option>").attr("value", addedProject.name()).html(addedProject.name());
-  $("#project").append(option);
-}
-
-function onremovedproject(removedProject) {
-  var selector = 'option[value="' + removedProject.name() + '"]';
-  $(selector).remove();
-}
-
-projectsRef.on('child_added', onaddedproject);
-projectsRef.on('child_removed', onremovedproject);
-
 
 $(function () {
+  var onaddedproject = function(addedProject) {
+    var option = $("<option>").attr("value", addedProject.name()).html(addedProject.name());
+    $("#project").append(option);
+  };
+
+  var onremovedproject = function (removedProject) {
+    var selector = 'option[value="' + removedProject.name() + '"]';
+    $(selector).remove();
+  };
+
   var join = function (projectName) {
 
     if (!validateProjectName(projectName)) {
@@ -50,6 +47,9 @@ $(function () {
       initiatePeerConnection();
     });
   };
+
+  projectsRef.on('child_added', onaddedproject);
+  projectsRef.on('child_removed', onremovedproject);
 
   $("#join").click(function (){
     join($("#project").val());

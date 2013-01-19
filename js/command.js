@@ -10,6 +10,12 @@ commands.program = function (sender, json) {
     message(sender.id, "send a program (size=" + String(json.program.length) + ")");
     program = json.program;
     console.log(json.program);
+
+    mapReduceWorker = new MapReduceWorker(program);
+
+    mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
+    console.log(mapReduceAgent);
+
   } else {
     log("Invalid program");
   }

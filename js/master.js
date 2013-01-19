@@ -9,8 +9,6 @@
 var project;
 var dataset;
 
-var mapReduceAgent;
-
 $(function () {
 
   var startUp = function () {
@@ -30,7 +28,7 @@ $(function () {
     mapReduceWorker = new MapReduceWorker(program);
     mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
 
-    mapReduceAgent.map(dataset.length);
+    //mapReduceAgent.map(dataset.length);
   };
 
   var setUp = function () {
