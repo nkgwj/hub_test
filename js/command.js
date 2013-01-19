@@ -49,7 +49,7 @@ commands.request_intermediates = function (sender, json) {
 
 commands.intermediates = function (sender, json) {
   if (json.intermediates) {
-    message(sender.id, "send a intermediates (size=" + String(json.intermediates.length) + ")");
+    message(sender.id, "send a intermediates (size=" + String(json.size) + ")");
     intermediatesStore.store(json.intermediates);
   } else {
     log("invalid intermediates");
@@ -60,7 +60,42 @@ commands.result = function (sender, json) {
   message(sender.id, "answer a result (result=" + String(json.result) + ")");
 };
 
+function isLeaf(){
+  return childrenIds.length === 0;
+}
+
+function isRoot(){
+  return parentId === 0;
+}
+
+function broadcastCommand(cmd, json) {
+  var length = childrenIds.length;
+  for (var i = 0; i < length; i++) {
+    (new Sender(childrenIds[i])).command(cmd, json);
+  }
+}
+
+function commandRelay(cmd,sender,json,direction) {
+  json.publisher |= sender.id;
+  log("commandRelay publisher:"+json.publisher);
+  if (direction === "upward") {
+    if (!isRoot()) {
+      (new Sender(parentId)).command(cmd, json);
+    } else {
+      log("[Root Node]")
+    }
+  } else {
+    if (!isLeaf()) {
+      broadcastCommand(cmd, json);
+    } else {
+      log("[Leaf Node]")
+    }
+  }
+}
+
+
 function commandDispatcher(cmd, senderId, json) {
+  var sender;
   switch (cmd) {
     case "request_dataset":
     case "dataset":
@@ -70,9 +105,18 @@ function commandDispatcher(cmd, senderId, json) {
     case "intermediates":
     case "result":
       log(cmd);
-      commands[cmd](new Sender(senderId), json);
+      sender = new Sender(senderId);
+      commands[cmd](sender,json);
+      if(json.relay === "upward"){
+        commandRelay(cmd,sender,json,"upward");
+      } else if(json.relay === "downward"){
+        commandRelay(cmd,sender,json,"downward");
+      }
+
       break;
     default:
       log("unknown");
   }
+
+
 }

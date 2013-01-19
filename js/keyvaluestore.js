@@ -26,7 +26,7 @@ var KeyValueStore = (function () {
     return this.repository;
   };
 
-  KeyValueStore.prototype.withdraw = function (size) {
+  KeyValueStore.prototype.withdraw = function (size,isSkipReduced) {
     var isAllReduced = true;
     var iterator = this.iterator();
 
@@ -34,10 +34,13 @@ var KeyValueStore = (function () {
     for (var i = 0; i < size && i < this.repository.size; i++) {
       var key = iterator.next();
       var value = this.repository.get(key);
-      if (value.length === 1) {
+      var isAlreadyReduced = (value.length === 1);
+
+      isAllReduced &= isAlreadyReduced;
+
+      if (isAlreadyReduced && isSkipReduced) {
         size++;
       } else {
-        isAllReduced = false;
         this.repository.delete(key);
         intermediates[key] = value;
       }

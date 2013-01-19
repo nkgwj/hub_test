@@ -19,7 +19,7 @@ var MapReduceAgent = (function () {
   };
 
   MapReduceAgent.prototype.reduce = function (size) {
-    var subset = this.intermediatesStore.withdraw(size);
+    var subset = this.intermediatesStore.withdraw(size,true);
     mapReduceWorker.reduce(subset);
   };
 

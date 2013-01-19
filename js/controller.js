@@ -9,6 +9,7 @@
 $(function () {
   $("#btn-program").click(
     function () {
+      //broadcastCommand("program",{program:program});
       log("not implemented:"+$("#program-status").val());
     }
   );
@@ -30,7 +31,7 @@ $(function () {
   $("#btn-rise").click(
     function () {
       var size = Number($("#rise-size").val());
-      var subset = this.intermediatesStore.withdraw(size);
+      var subset = intermediatesStore.withdraw(size);
       var sender = new Sender(parentId);
       sender.command("intermediates", {intermediates:subset});
     }
