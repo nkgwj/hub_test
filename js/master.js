@@ -46,6 +46,7 @@ $(function () {
       $("#program,#dataset,#project").val('');
 
       $('#config').attr('disabled', 'disabled').slideUp();
+      $("#controller").slideDown();
 
       log('Project:' + project);
       log('Program:' + programFile.name);

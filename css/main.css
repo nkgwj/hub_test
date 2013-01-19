@@ -84,3 +84,7 @@ textarea.sdp {
 #controller > #program-status {
     width: 2em;
 }
+
+#controller > .unused {
+    display: none;
+}

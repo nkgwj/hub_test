@@ -9,13 +9,13 @@
 $(function () {
   $("#btn-program").click(
     function () {
-      broadcastCommand("program",{program:program,"relay":"downward"});
-      log("not implemented:"+$("#program-status").val());
+      broadcastCommand("program", {program:program, "relay":"downward"});
+      log("not implemented:" + $("#program-status").val());
     }
   );
 
   $("#btn-map").click(
-    function(){
+    function () {
       var size = Number($("#map-size").val());
       mapReduceAgent.map(size);
     }
@@ -31,7 +31,7 @@ $(function () {
   $("#btn-dataset").click(
     function () {
       var size = Number($("#dataset-size").val());
-      (new Sender(parentId)).command("request_dataset",{size:size});
+      (new Sender(parentId)).command("request_dataset", {size:size});
     }
   );
 

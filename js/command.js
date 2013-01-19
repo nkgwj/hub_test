@@ -2,7 +2,7 @@ var commands = {};
 
 commands.request_program = function (sender, json) {
   message(sender.id, "requests a program");
-  sender.command("program",{program:program});
+  sender.command("program", {program:program});
 };
 
 commands.program = function (sender, json) {
@@ -25,7 +25,7 @@ commands.request_dataset = function (sender, json) {
   json.size = json.size > 0 ? json.size : 0;
   message(sender.id, "requests a dataset (size=" + String(json.size) + ")");
   var datasetSubset = datasetStore.withdraw(json.size);
-  sender.command("dataset",{dataset:datasetSubset});
+  sender.command("dataset", {dataset:datasetSubset});
 };
 
 commands.dataset = function (sender, json) {
@@ -43,7 +43,7 @@ commands.request_intermediates = function (sender, json) {
   json.size = json.size > 0 ? json.size : 0;
   message(sender.id, "requests a intermediates (size=" + String(json.size) + ")");
   var intermediatesSubset = intermediatesStore.withdraw(json.size);
-  sender.command("intermediates",{intermediates:intermediatesSubset});
+  sender.command("intermediates", {intermediates:intermediatesSubset});
 
 };
 
@@ -60,11 +60,11 @@ commands.result = function (sender, json) {
   message(sender.id, "answer a result (result=" + String(json.result) + ")");
 };
 
-function isLeaf(){
+function isLeaf() {
   return childrenIds.length === 0;
 }
 
-function isRoot(){
+function isRoot() {
   return parentId === 0;
 }
 
@@ -75,9 +75,9 @@ function broadcastCommand(cmd, json) {
   }
 }
 
-function commandRelay(cmd,sender,json,direction) {
+function commandRelay(cmd, sender, json, direction) {
   json.publisher |= sender.id;
-  log("commandRelay publisher:"+json.publisher);
+  log("commandRelay publisher:" + json.publisher);
   if (direction === "upward") {
     if (!isRoot()) {
       (new Sender(parentId)).command(cmd, json);
@@ -106,11 +106,11 @@ function commandDispatcher(cmd, senderId, json) {
     case "result":
       log(cmd);
       sender = new Sender(senderId);
-      commands[cmd](sender,json);
-      if(json.relay === "upward"){
-        commandRelay(cmd,sender,json,"upward");
-      } else if(json.relay === "downward"){
-        commandRelay(cmd,sender,json,"downward");
+      commands[cmd](sender, json);
+      if (json.relay === "upward") {
+        commandRelay(cmd, sender, json, "upward");
+      } else if (json.relay === "downward") {
+        commandRelay(cmd, sender, json, "downward");
       }
 
       break;
