@@ -1,125 +1,132 @@
-var commands = {};
+var Command = (function () {
+  function Command() {
+  }
 
-var isParentRunoutDataset;
+  Command.prototype.request_program = function (sender, json) {
+    message(sender.id, 'requests a program');
+    sender.command('program', {program:program});
+  };
 
+  Command.prototype.program = function (sender, json) {
+    if (json.program) {
+      message(sender.id, 'send a program (size=' + String(json.program.length) + ')');
+      program = json.program;
+      console.log(json.program);
 
-commands.request_program = function (sender, json) {
-  message(sender.id, 'requests a program');
-  sender.command('program', {program:program});
-};
+      mapReduceWorker = new MapReduceWorker(program);
 
-commands.program = function (sender, json) {
-  if (json.program) {
-    message(sender.id, 'send a program (size=' + String(json.program.length) + ')');
-    program = json.program;
-    console.log(json.program);
+      mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
+      console.log(mapReduceAgent);
 
-    mapReduceWorker = new MapReduceWorker(program);
+      if(isLeaf()){
+        (new Sender(parentId)).command('program_ready');
+      }
 
-    mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
-    console.log(mapReduceAgent);
+    } else {
+      log('Invalid program');
+    }
+  };
 
-    if(isLeaf()){
+  Command.prototype.program_ready = function(sender,json){
+
+    connections[sender.id].program_ready = true;
+
+    var isAllChildrenProgramReady = function(){
+
+      return childrenIds.map(function(id){
+        return connections[id].program_ready
+      }).reduce(function(a,b){
+          return a && b;
+        });
+
+    };
+
+    if(isAllChildrenProgramReady){
       (new Sender(parentId)).command('program_ready');
     }
 
-  } else {
-    log('Invalid program');
-  }
-};
+  };
 
-commands.program_ready = function(sender,json){
 
-  connections[sender.id].program_ready = true;
 
-  var isAllChildrenProgramReady = function(){
+  Command.prototype.completed = function(sender,json){
 
-    return childrenIds.map(function(id){
-      return connections[id].program_ready
-    }).reduce(function(a,b){
-      return a && b;
-    });
+    connections[sender.id].completed = true;
+
+    var isAllChildrenCompleted = function(){
+
+      return childrenIds.map(function(id){
+        return connections[id].completed;
+      }).reduce(function(a,b){
+          return a && b;
+        });
+
+    };
+
+    if(isAllChildrenCompleted()){
+      (new Sender(parentId)).command('completed');
+    }
 
   };
 
-  if(isAllChildrenProgramReady){
-    (new Sender(parentId)).command('program_ready');
-  }
 
-};
+  Command.prototype.request_dataset = function (sender, json) {
+    json.size = json.size > 0 ? json.size : 0;
+    message(sender.id, 'requests a dataset (size=' + String(json.size) + ')');
+    var datasetSubset = datasetStore.withdraw(json.size);
+    sender.command('dataset', {dataset:datasetSubset});
+  };
 
-
-
-commands.completed = function(sender,json){
-
-  connections[sender.id].completed = true;
-
-  var isAllChildrenCompleted = function(){
-
-    return childrenIds.map(function(id){
-      return connections[id].completed;
-    }).reduce(function(a,b){
-        return a && b;
-    });
+  Command.prototype.dataset = function (sender, json) {
+    if (json.dataset) {
+      message(sender.id, 'send a dataset (size=' + String(json.dataset.length) + ')');
+      datasetStore.store(json.dataset);
+      console.log(json.dataset);
+    } else {
+      log('invalid dataset');
+    }
 
   };
 
-  if(isAllChildrenCompleted()){
-    (new Sender(parentId)).command('completed');
-  }
+  Command.prototype.request_intermediates = function (sender, json) {
+    json.size = json.size > 0 ? json.size : 0;
+    message(sender.id, 'requests a intermediates (size=' + String(json.size) + ')');
+    var intermediatesSubset = intermediatesStore.withdraw(json.size);
+    sender.command('intermediates', {intermediates:intermediatesSubset});
 
-};
+  };
+
+  Command.prototype.intermediates = function (sender, json) {
+    if (json.intermediates) {
+      message(sender.id, 'send a intermediates (size=' + String(json.size) + ')');
+      intermediatesStore.store(json.intermediates);
+    } else {
+      log('invalid intermediates');
+    }
+  };
+
+  Command.prototype.result = function (sender, json) {
+    message(sender.id, 'answer a result (result=' + String(json.result) + ')');
+  };
+
+  Command.prototype.runout_dataset = function(sender,json){
+    message(sender.id,'run out of dataset');
+    isParentRunoutDataset = true;
+  };
 
 
-commands.request_dataset = function (sender, json) {
-  json.size = json.size > 0 ? json.size : 0;
-  message(sender.id, 'requests a dataset (size=' + String(json.size) + ')');
-  var datasetSubset = datasetStore.withdraw(json.size);
-  sender.command('dataset', {dataset:datasetSubset});
-};
+  Command.broadcast = function (cmd, json) {
+    childrenIds.forEach(function (id) {
+      (new Sender(id)).command(cmd, json);
+    });
+  };
 
-commands.dataset = function (sender, json) {
-  if (json.dataset) {
-    message(sender.id, 'send a dataset (size=' + String(json.dataset.length) + ')');
-    datasetStore.store(json.dataset);
-    console.log(json.dataset);
-  } else {
-    log('invalid dataset');
-  }
+  return Command;
+})();
 
-};
+var command = new Command();
 
-commands.request_intermediates = function (sender, json) {
-  json.size = json.size > 0 ? json.size : 0;
-  message(sender.id, 'requests a intermediates (size=' + String(json.size) + ')');
-  var intermediatesSubset = intermediatesStore.withdraw(json.size);
-  sender.command('intermediates', {intermediates:intermediatesSubset});
-
-};
-
-commands.intermediates = function (sender, json) {
-  if (json.intermediates) {
-    message(sender.id, 'send a intermediates (size=' + String(json.size) + ')');
-    intermediatesStore.store(json.intermediates);
-  } else {
-    log('invalid intermediates');
-  }
-};
-
-commands.result = function (sender, json) {
-  message(sender.id, 'answer a result (result=' + String(json.result) + ')');
-};
-
-commands.runout_dataset = function(sender,json){
-  message(sender.id,'run out of dataset');
-  isParentRunoutDataset = true;
-};
-
-function broadcastCommand(cmd, json) {
-  childrenIds.forEach(function (id) {
-    (new Sender(id)).command(cmd, json);
-  });
-}
+var isParentRunoutDataset;
 
 function commandRelay(cmd, sender, json, direction) {
   json.publisher |= sender.id;
@@ -132,7 +139,7 @@ function commandRelay(cmd, sender, json, direction) {
     }
   } else {
     if (!isLeaf()) {
-      broadcastCommand(cmd, json);
+      Command.broadcast(cmd, json)
     } else {
       log('[Leaf Node]')
     }
@@ -154,7 +161,7 @@ function commandDispatcher(cmd, senderId, json) {
     case 'completed':
       log(cmd);
       sender = new Sender(senderId);
-      commands[cmd](sender, json);
+      command[cmd](sender, json);
       if (json.relay === 'upward') {
         commandRelay(cmd, sender, json, 'upward');
       } else if (json.relay === 'downward') {
