@@ -30,6 +30,5 @@ var DataStore = (function () {
     return this.repository.length === 0;
   };
 
-
   return DataStore;
 })();
