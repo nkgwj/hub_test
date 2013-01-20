@@ -14,8 +14,12 @@ var MapReduceAgent = (function () {
   }
 
   MapReduceAgent.prototype.map = function (size) {
-    var subset = this.datasetStore.withdraw(size);
-    mapReduceWorker.map(subset);
+    if (!this.datasetStore.isEmpty()) {
+      var subset = this.datasetStore.withdraw(size);
+      mapReduceWorker.map(subset);
+    } else if(isRoot() || isParentRunoutDataset){
+      broadcastCommand("runout_dataset");
+    }
   };
 
   MapReduceAgent.prototype.reduce = function (size) {

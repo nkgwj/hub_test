@@ -6,6 +6,16 @@
  * To change this template use File | Settings | File Templates.
  */
 var datasetStore = new DataStore();
+datasetStore.onrunout = function () {
+  if (isRoot() || isParentRunoutDataset) {
+    broadcastCommand('runout_dataset');
+  }
+};
+
+
+
+
+
 var intermediatesStore = new KeyValueStore();
 
 var mapReduceAgent;

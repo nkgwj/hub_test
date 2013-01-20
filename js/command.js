@@ -1,5 +1,7 @@
 var commands = {};
 
+var isParentRunoutDataset;
+
 commands.request_program = function (sender, json) {
   message(sender.id, 'requests a program');
   sender.command('program', {program:program});
@@ -84,6 +86,11 @@ commands.result = function (sender, json) {
   message(sender.id, 'answer a result (result=' + String(json.result) + ')');
 };
 
+commands.runout_dataset = function(sender,json){
+  message(sender.id,'run out of dataset');
+  isParentRunoutDataset = true;
+};
+
 function broadcastCommand(cmd, json) {
   childrenIds.forEach(function (id) {
     (new Sender(id)).command(cmd, json);
@@ -119,6 +126,7 @@ function commandDispatcher(cmd, senderId, json) {
     case 'request_intermediates':
     case 'intermediates':
     case 'result':
+    case 'runout_dataset':
       log(cmd);
       sender = new Sender(senderId);
       commands[cmd](sender, json);
