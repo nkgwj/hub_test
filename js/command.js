@@ -168,7 +168,3 @@ var Command = (function () {
   return Command;
 })();
 
-var command = new Command();
-
-var isParentRunoutDataset;
-

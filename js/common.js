@@ -5,20 +5,34 @@
  * Time: 14:38
  * To change this template use File | Settings | File Templates.
  */
+
+if (!window.setImmediate) {
+  window.setImmediate = function(func, args){
+    return window.setTimeout(func, 0, args);
+  };
+  window.clearImmediate = window.clearTimeout;
+}
+
 var datasetStore = new DataStore();
+
 datasetStore.onrunout = function () {
-  if (isRoot() || isParentRunoutDataset) {
-    if(!isLeaf()){
-      Command.broadcast('runout_dataset');
-    } else {
-      log('dataset exhausted');
+  isRunoutDataset = isRoot() || isParentRunoutDataset;
+  if (isRunoutDataset) {
+    log('dataset exhausted');
+    if (!isLeaf()) {
+      setImmediate(function(){
+        Command.broadcast('runout_dataset')
+      });
     }
   }
 };
 
 
 
+var command = new Command();
 
+var isParentRunoutDataset;
+var isRunoutDataset;
 
 var intermediatesStore = new KeyValueStore();
 
