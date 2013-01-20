@@ -21,16 +21,14 @@ var MapReduceWorker = (function () {
       var json = evt.data;
       outputBox.log(JSON.stringify(json));
 
-      switch (json.command) {
-        case 'intermediates':
+      if (json.command === 'intermediates'){
           if (json.intermediates) {
             outputBox.message('worker', 'send a intermediates (size=' + String(json.intermediates.length) + ')');
             intermediatesStore.store(json.intermediates);
           } else {
             outputBox.log('invalid intermediates');
           }
-          break;
-        default:
+      } else {
           outputBox.log('Invalid commands(worker)');
       }
     };

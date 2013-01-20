@@ -65,14 +65,12 @@ function listen(myId) {
   nodesRef.child(myId).child('queue').on('child_added', function (snapshot) {
     var data = snapshot.val();
     snapshot.ref().remove();
-    switch (data.type) {
-      case 'offer':
-        incomingOffer(data.offer, data.port, data.sender);
-        break;
-      case 'answer':
-        incomingAnswer(data.answer, data.port, data.sender);
-        break;
+    if (data.type === 'offer'){
+      incomingOffer(data.offer, data.port, data.sender);
+    } else if(data.type === 'answer'){
+      incomingAnswer(data.answer, data.port, data.sender);
     }
+
   });
 }
 
