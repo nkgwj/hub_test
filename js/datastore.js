@@ -22,7 +22,7 @@ var DataStore = (function () {
     if (this.isEmpty()) {
       this.onrunout();
     }
-    
+
     return subset;
   };
 

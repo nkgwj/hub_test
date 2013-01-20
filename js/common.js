@@ -8,7 +8,11 @@
 var datasetStore = new DataStore();
 datasetStore.onrunout = function () {
   if (isRoot() || isParentRunoutDataset) {
-    broadcastCommand('runout_dataset');
+    if(!isLeaf()){
+      broadcastCommand('runout_dataset');
+    } else {
+      log('dataset exhausted');
+    }
   }
 };
 

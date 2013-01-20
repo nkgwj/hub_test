@@ -2,6 +2,7 @@ var commands = {};
 
 var isParentRunoutDataset;
 
+
 commands.request_program = function (sender, json) {
   message(sender.id, 'requests a program');
   sender.command('program', {program:program});
@@ -46,6 +47,29 @@ commands.program_ready = function(sender,json){
   }
 
 };
+
+
+
+commands.completed = function(sender,json){
+
+  connections[sender.id].completed = true;
+
+  var isAllChildrenCompleted = function(){
+
+    return childrenIds.map(function(id){
+      return connections[id].completed;
+    }).reduce(function(a,b){
+        return a && b;
+    });
+
+  };
+
+  if(isAllChildrenCompleted()){
+    (new Sender(parentId)).command('completed');
+  }
+
+};
+
 
 commands.request_dataset = function (sender, json) {
   json.size = json.size > 0 ? json.size : 0;
@@ -127,6 +151,7 @@ function commandDispatcher(cmd, senderId, json) {
     case 'intermediates':
     case 'result':
     case 'runout_dataset':
+    case 'completed':
       log(cmd);
       sender = new Sender(senderId);
       commands[cmd](sender, json);
