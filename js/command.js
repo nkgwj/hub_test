@@ -139,6 +139,33 @@ var Command = (function () {
     }
   };
 
+  Command.dispatch = function (cmd, senderId, json) {
+    var sender;
+    switch (cmd) {
+      case 'request_dataset':
+      case 'dataset':
+      case 'request_program':
+      case 'program':
+      case 'request_intermediates':
+      case 'intermediates':
+      case 'result':
+      case 'runout_dataset':
+      case 'completed':
+        log(cmd);
+        sender = new Sender(senderId);
+        command[cmd](sender, json);
+        if (json.relay === 'upward') {
+          Command.relay(cmd, sender, json, 'upward');
+        } else if (json.relay === 'downward') {
+          Command.relay(cmd, sender, json, 'downward');
+        }
+
+        break;
+      default:
+        log('unknown');
+    }
+  };
+
   return Command;
 })();
 
@@ -146,31 +173,3 @@ var command = new Command();
 
 var isParentRunoutDataset;
 
-
-
-function commandDispatcher(cmd, senderId, json) {
-  var sender;
-  switch (cmd) {
-    case 'request_dataset':
-    case 'dataset':
-    case 'request_program':
-    case 'program':
-    case 'request_intermediates':
-    case 'intermediates':
-    case 'result':
-    case 'runout_dataset':
-    case 'completed':
-      log(cmd);
-      sender = new Sender(senderId);
-      command[cmd](sender, json);
-      if (json.relay === 'upward') {
-        Command.relay(cmd, sender, json, 'upward');
-      } else if (json.relay === 'downward') {
-        Command.relay(cmd, sender, json, 'downward');
-      }
-
-      break;
-    default:
-      log('unknown');
-  }
-}

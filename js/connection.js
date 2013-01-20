@@ -82,7 +82,7 @@ function setupDataChannel(channel, localPC, remotePC) {
 
     var json = JSON.parse(data);
     if (typeof json === 'object' && json.command) {
-      commandDispatcher(json.command, remotePC, json);
+      Command.dispatch(json.command, remotePC, json);
     }
   };
 
