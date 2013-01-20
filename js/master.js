@@ -5,11 +5,10 @@
  * Time: 18:22
  * To change this template use File | Settings | File Templates.
  */
-var project;
-var dataset;
 
 $(function () {
-
+  var project;
+  var dataset;
   var startUp = function () {
     projectRef = projectsRef.child(project);
     projectRef.removeOnDisconnect();

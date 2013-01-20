@@ -7,6 +7,7 @@
  */
 
 $(function () {
+  var project;
   var onaddedproject = function(addedProject) {
     var option = $('<option>').attr('value', addedProject.name()).html(addedProject.name());
     $('#project').append(option);

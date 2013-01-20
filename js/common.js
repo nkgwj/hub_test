@@ -40,7 +40,6 @@ var mapReduceAgent;
 var mainRef = new Firebase('https://rtc.firebaseio.com/hub_test_v1/');
 var projectsRef = mainRef.child('projects');
 var projectRef, nextIdRef, nodesRef;
-var project;
 var myId, parentId;
 var childrenIds = [];
 
