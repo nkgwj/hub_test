@@ -121,6 +121,24 @@ var Command = (function () {
     });
   };
 
+  Command.relay = function (cmd, sender, json, direction) {
+    json.publisher |= sender.id;
+    log('commandRelay publisher:' + json.publisher);
+    if (direction === 'upward') {
+      if (!isRoot()) {
+        (new Sender(parentId)).command(cmd, json);
+      } else {
+        log('[Root Node]')
+      }
+    } else {
+      if (!isLeaf()) {
+        Command.broadcast(cmd, json)
+      } else {
+        log('[Leaf Node]')
+      }
+    }
+  };
+
   return Command;
 })();
 
@@ -128,23 +146,6 @@ var command = new Command();
 
 var isParentRunoutDataset;
 
-function commandRelay(cmd, sender, json, direction) {
-  json.publisher |= sender.id;
-  log('commandRelay publisher:' + json.publisher);
-  if (direction === 'upward') {
-    if (!isRoot()) {
-      (new Sender(parentId)).command(cmd, json);
-    } else {
-      log('[Root Node]')
-    }
-  } else {
-    if (!isLeaf()) {
-      Command.broadcast(cmd, json)
-    } else {
-      log('[Leaf Node]')
-    }
-  }
-}
 
 
 function commandDispatcher(cmd, senderId, json) {
@@ -163,9 +164,9 @@ function commandDispatcher(cmd, senderId, json) {
       sender = new Sender(senderId);
       command[cmd](sender, json);
       if (json.relay === 'upward') {
-        commandRelay(cmd, sender, json, 'upward');
+        Command.relay(cmd, sender, json, 'upward');
       } else if (json.relay === 'downward') {
-        commandRelay(cmd, sender, json, 'downward');
+        Command.relay(cmd, sender, json, 'downward');
       }
 
       break;
