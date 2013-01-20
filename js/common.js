@@ -10,32 +10,32 @@ var intermediatesStore = new KeyValueStore();
 
 var mapReduceAgent;
 
-var mainRef = new Firebase("https://rtc.firebaseio.com/hub_test_v1/");
-var projectsRef = mainRef.child("projects");
+var mainRef = new Firebase('https://rtc.firebaseio.com/hub_test_v1/');
+var projectsRef = mainRef.child('projects');
 var projectRef, nextIdRef, nodesRef;
 var project;
 var myId, parentId;
 var childrenIds = [];
 
 function listen(myId) {
-  $("#myId").html(myId);
+  $('#myId').html(myId);
   parentId = Math.floor(myId / 2);
 
   if (parentId > 0) {
-    $("#parentId").text(parentId);
+    $('#parentId').text(parentId);
   } else {
-    $("#parentId").text("<*>").addClass("none");
+    $('#parentId').text('<*>').addClass('none');
   }
 
   nextIdRef.set(myId + 1);
-  nodesRef.child(myId).child("queue").on('child_added', function (snapshot) {
+  nodesRef.child(myId).child('queue').on('child_added', function (snapshot) {
     var data = snapshot.val();
     snapshot.ref().remove();
     switch (data.type) {
-      case "offer":
+      case 'offer':
         incomingOffer(data.offer, data.port, data.sender);
         break;
-      case "answer":
+      case 'answer':
         incomingAnswer(data.answer, data.port, data.sender);
         break;
     }
@@ -52,43 +52,43 @@ function isRoot() {
 
 function checkFeature() {
   if (!navigator.mozGetUserMedia) {
-    log("getUserMedia not supported.");
+    log('getUserMedia not supported.');
     return false;
   }
   if (!window.mozRTCPeerConnection) {
-    log("PeerConnection not supported.");
+    log('PeerConnection not supported.');
     return false;
   }
   return true;
 }
 
 function sdpbox(sdp) {
-  return $("<textarea>").addClass("sdp").text(sdp)[0].outerHTML;
+  return $('<textarea>').addClass('sdp').text(sdp)[0].outerHTML;
 }
 
 function start() {
   if (!checkFeature()) {
     return;
   }
-  log("start");
+  log('start');
 }
 
 function message(subject, body) {
-  $("#log").prepend($("<p>").addClass("message").append(
-    $("<span>").addClass('message-subject').html(subject)
+  $('#log').prepend($('<p>').addClass('message').append(
+    $('<span>').addClass('message-subject').html(subject)
   ).append(
-    $("<span>").addClass('message-body').html(body)
+    $('<span>').addClass('message-body').html(body)
   ));
 }
 
 function log(msg) {
-  $("#log").prepend($("<p>").addClass("system-log").html(Array.apply(null, arguments).join("")));
+  $('#log').prepend($('<p>').addClass('system-log').html(Array.apply(null, arguments).join('')));
 }
 
 function error() {
-  log("Error");
+  log('Error');
 }
 
 function validateProjectName(projectName) {
-  return (typeof projectName === 'string' && projectName != "");
+  return (typeof projectName === 'string' && projectName != '');
 }

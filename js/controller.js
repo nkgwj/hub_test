@@ -7,40 +7,40 @@
  */
 
 $(function () {
-  $("#btn-program").click(
+  $('#btn-program').click(
     function () {
-      broadcastCommand("program", {program:program, "relay":"downward"});
-      log("not implemented:" + $("#program-status").val());
+      broadcastCommand('program', {program:program, relay:'downward'});
+      log('not implemented:' + $('#program-status').val());
     }
   );
 
-  $("#btn-map").click(
+  $('#btn-map').click(
     function () {
-      var size = Number($("#map-size").val());
+      var size = Number($('#map-size').val());
       mapReduceAgent.map(size);
     }
   );
 
-  $("#btn-reduce").click(
+  $('#btn-reduce').click(
     function () {
-      var size = Number($("#reduce-size").val());
+      var size = Number($('#reduce-size').val());
       mapReduceAgent.reduce(size);
     }
   );
 
-  $("#btn-dataset").click(
+  $('#btn-dataset').click(
     function () {
-      var size = Number($("#dataset-size").val());
-      (new Sender(parentId)).command("request_dataset", {size:size});
+      var size = Number($('#dataset-size').val());
+      (new Sender(parentId)).command('request_dataset', {size:size});
     }
   );
 
-  $("#btn-rise").click(
+  $('#btn-rise').click(
     function () {
-      var size = Number($("#rise-size").val());
+      var size = Number($('#rise-size').val());
       var subset = intermediatesStore.withdraw(size);
       var sender = new Sender(parentId);
-      sender.command("intermediates", {intermediates:subset});
+      sender.command('intermediates', {intermediates:subset});
     }
   );
 });

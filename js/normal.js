@@ -8,8 +8,8 @@
 
 $(function () {
   var onaddedproject = function(addedProject) {
-    var option = $("<option>").attr("value", addedProject.name()).html(addedProject.name());
-    $("#project").append(option);
+    var option = $('<option>').attr('value', addedProject.name()).html(addedProject.name());
+    $('#project').append(option);
   };
 
   var onremovedproject = function (removedProject) {
@@ -19,30 +19,30 @@ $(function () {
 
   var join = function (projectName) {
     if (!validateProjectName(projectName)) {
-      log("error");
+      log('error');
       return;
     }
 
     project = projectName;
-    log("Project:" + project);
+    log('Project:' + project);
 
     projectsRef.off('child_added', onaddedproject);
     projectsRef.off('child_removed', onremovedproject);
 
     $('#config').attr('disabled', 'disabled').slideUp();
-    $("#controller").slideDown();
+    $('#controller').slideDown();
 
     projectRef = projectsRef.child(project);
     projectRef.removeOnDisconnect();
 
-    nextIdRef = projectRef.child("nextId");
-    nodesRef = projectRef.child("nodes");
+    nextIdRef = projectRef.child('nextId');
+    nodesRef = projectRef.child('nodes');
 
     nextIdRef.once('value', function (snapshot) {
       myId = snapshot.val();
       listen(myId);
-      nodesRef.child(parentId).child("queue").push({
-        type:"request",
+      nodesRef.child(parentId).child('queue').push({
+        type:'request',
         sender:myId
       });
       initiatePeerConnection();
@@ -52,7 +52,7 @@ $(function () {
   projectsRef.on('child_added', onaddedproject);
   projectsRef.on('child_removed', onremovedproject);
 
-  $("#join").click(function (){
-    join($("#project").val());
+  $('#join').click(function (){
+    join($('#project').val());
   });
 });

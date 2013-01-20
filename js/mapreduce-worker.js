@@ -9,7 +9,7 @@
 var MapReduceWorker = (function () {
   function MapReduceWorker(mapProgram, reduceProgram) {
     var createProgramObjectURL = function (sourceCode) {
-      var blob = new Blob([sourceCode], {type:"text\/javascript"});
+      var blob = new Blob([sourceCode], {type:'text\/javascript'});
       return URL.createObjectURL(blob);
     };
     var mapObjectURL = createProgramObjectURL(mapProgram);
@@ -22,26 +22,26 @@ var MapReduceWorker = (function () {
       log(JSON.stringify(json));
 
       switch (json.command) {
-        case "intermediates":
+        case 'intermediates':
           if (json.intermediates) {
-            message("worker", "send a intermediates (size=" + String(json.intermediates.length) + ")");
+            message('worker', 'send a intermediates (size=' + String(json.intermediates.length) + ')');
             intermediatesStore.store(json.intermediates);
           } else {
-            log("invalid intermediates");
+            log('invalid intermediates');
           }
           break;
         default:
-          log("Invalid commands(worker)");
+          log('Invalid commands(worker)');
       }
     };
   }
 
   MapReduceWorker.prototype.map = function (subsetDataset) {
-    this.mapWorker.postMessage({command:"map", dataset:subsetDataset});
+    this.mapWorker.postMessage({command:'map', dataset:subsetDataset});
   };
 
   MapReduceWorker.prototype.reduce = function (subsetIntermediates) {
-    this.reduceWorker.postMessage({command:"reduce", intermediates:subsetIntermediates});
+    this.reduceWorker.postMessage({command:'reduce', intermediates:subsetIntermediates});
   };
 
   return MapReduceWorker;

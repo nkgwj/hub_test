@@ -7,12 +7,12 @@ function incomingAnswer(answer, port, fromUser) {
   var peerConnection = connection.peerConnection;
 
   peerConnection.setRemoteDescription(JSON.parse(answer), function () {
-    log("Recieved a [answer]"); // + sdpbox(JSON.parse(answer).sdp));
+    log('Recieved a [answer]'); // + sdpbox(JSON.parse(answer).sdp));
 
-    log("[Session Description Negotiation Completed]");
+    log('[Session Description Negotiation Completed]');
     setTimeout(function () {
       peerConnection.connectDataConnection(connection.offererPort, connection.answererPort);
-      log("connectDataConnection(" + connection.offererPort + "," + connection.answererPort + ")");
+      log('connectDataConnection(' + connection.offererPort + ',' + connection.answererPort + ')');
     }, 500); //3000 -> 500
   }, error);
 }
@@ -26,41 +26,41 @@ function incomingOffer(offer, port, fromUser) {
     peerConnection.addStream(audioStream);
 
     peerConnection.ondatachannel = function (channel) {
-      log("DataChannel(label=" + channel.label + ")");
+      log('DataChannel(label=' + channel.label + ')');
 
       connections[fromUser].dataChannel = setupDataChannel(channel, myId, fromUser);
       childrenIds.push(fromUser);
 
-      $("#childrenIds").text(childrenIds.join(" "));
+      $('#childrenIds').text(childrenIds.join(' '));
 
     };
 
     peerConnection.onconnection = function () {
-      log("[Connected]");
+      log('[Connected]');
     };
 
     peerConnection.setRemoteDescription(JSON.parse(offer), function () {
-      log("Received a [offer]");
+      log('Received a [offer]');
       peerConnection.createAnswer(function (answer) {
-        log("Created a [answer]")//+ sdpbox(answer.sdp))
+        log('Created a [answer]')//+ sdpbox(answer.sdp))
         peerConnection.setLocalDescription(answer, function () {
 
-          log("Sending:local -[answer]-> remote");// + sdpbox(JSON.parse(offer).sdp));
+          log('Sending:local -[answer]-> remote');// + sdpbox(JSON.parse(offer).sdp));
           connections[fromUser].peerConnection = peerConnection;
           connections[fromUser].answererPort = connections[fromUser].offererPort + 1;
 
           var toSend = {
-            type:"answer",
+            type:'answer',
             sender:myId,
             port:connections[fromUser].answererPort,
             answer:JSON.stringify(answer)
           };
 
-          nodesRef.child(fromUser).child("queue").push(toSend);
+          nodesRef.child(fromUser).child('queue').push(toSend);
 
           setTimeout(function () {
             peerConnection.connectDataConnection(connections[fromUser].answererPort, connections[fromUser].offererPort);
-            log("connectDataConnection(" + connections[fromUser].answererPort + "," + connections[fromUser].offererPort + ")");
+            log('connectDataConnection(' + connections[fromUser].answererPort + ',' + connections[fromUser].offererPort + ')');
           }, 500); //3000 -> 500
         }, error);
       }, error);
@@ -77,67 +77,67 @@ function setupDataChannel(channel, localPC, remotePC) {
       return;
     }
 
-    log("message from", remotePC, " length=", data.length);
+    log('message from', remotePC, ' length=', data.length);
     message(remotePC, data);
 
     var json = JSON.parse(data);
-    if (typeof json === "object" && json.command) {
+    if (typeof json === 'object' && json.command) {
       commandDispatcher(json.command, remotePC, json);
     }
   };
 
   channel.onopen = function () {
-    log("DataChannel opened for (label=" + channel.label+"):" + channel.readyState);
+    log('DataChannel opened for (label=' + channel.label+'):' + channel.readyState);
   };
 
   channel.onclose = function () {
-    log("DataChannel closed for (label=" + channel.label+"):" + channel.readyState);
+    log('DataChannel closed for (label=' + channel.label+'):' + channel.readyState);
   };
 
-  log("DataChannel:" + channel.readyState);
+  log('DataChannel:' + channel.readyState);
   return channel;
 }
 
 function initiatePeerConnection() {
-  log("Initiate a PeerConnection");
+  log('Initiate a PeerConnection');
 
   connections[parentId] = {};
 
   navigator.mozGetUserMedia({audio:true, fake:true}, function (audioStream) {
-    log("Created fake AudioStream");
+    log('Created fake AudioStream');
 
     var peerConnection = new mozRTCPeerConnection();
 
     peerConnection.addStream(audioStream);
 
     peerConnection.onconnection = function () {
-      log("[Connected]");
+      log('[Connected]');
       var channel = peerConnection.createDataChannel(String(myId), {});
       connections[parentId].dataChannel = setupDataChannel(channel, myId, parentId);
     };
 
     peerConnection.ondatachannel = function (channel) {
-      log("DataChannel(label=" + channel.label + ")");
+      log('DataChannel(label=' + channel.label + ')');
       connections[parentId].dataChannel = channel;
 
     };
 
     peerConnection.createOffer(function (offer) {
-      log("Created a [offer]");// + sdpbox(offer.sdp));
+      log('Created a [offer]');// + sdpbox(offer.sdp));
 
       peerConnection.setLocalDescription(offer, function () {
-        log("Sending:local -[offer]-> remote");
+        log('Sending:local -[offer]-> remote');
 
         connections[parentId].peerConnection = peerConnection;
         connections[parentId].offererPort = Math.floor(Math.random() * 5000) * 2;
         var toSend = {
-          type:"offer",
+          type:'offer',
           sender:myId,
           port:connections[parentId].offererPort,
           offer:JSON.stringify(offer)
         };
 
-        nodesRef.child(parentId).child("queue").push(toSend);
+        nodesRef.child(parentId).child('queue').push(toSend);
 
       }, error);
     }, error);

@@ -56,7 +56,7 @@ $(function () {
       programReader.readAsText(programFile);
       programReader.onload = function (evt) {
         program = evt.target.result;
-        message(programFile.name, $("<pre>").html(program));
+        message(programFile.name, $('<pre>').html(program));
 
         if (program && dataset) {
           startUp();
@@ -67,7 +67,7 @@ $(function () {
       datasetReader.readAsText(datasetFile);
       datasetReader.onload = function (evt) {
         var datasetJSON = evt.target.result;
-        message(datasetFile.name, $("<pre>").html(datasetJSON));
+        message(datasetFile.name, $('<pre>').html(datasetJSON));
         dataset = JSON.parse(datasetJSON);
 
         if (program && dataset) {
@@ -77,6 +77,6 @@ $(function () {
     }
   };
 
-  $("#setup").click(setUp);
+  $('#setup').click(setUp);
 
 });
