@@ -1,5 +1,7 @@
 var Command = (function () {
+  var _command;
   function Command() {
+    _command = this;
   }
 
   Command.prototype.request_program = function (sender, json) {
@@ -148,7 +150,7 @@ var Command = (function () {
       case 'completed':
         outputBox.log(cmd);
         sender = Command.sendto(senderId);
-        command[cmd](sender, json);
+        _command[cmd](sender, json);
         if (json.relay === 'upward') {
           Command.relay(cmd, sender, json, 'upward');
         } else if (json.relay === 'downward') {
