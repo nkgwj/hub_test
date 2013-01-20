@@ -19,7 +19,7 @@ var Command = (function () {
       console.log(mapReduceAgent);
 
       if(isLeaf()){
-        (new Sender(parentId)).command('program_ready');
+        Command.sendto(parentId).command('program_ready');
       }
 
     } else {
@@ -28,7 +28,6 @@ var Command = (function () {
   };
 
   Command.prototype.program_ready = function(sender,json){
-
     connections[sender.id].program_ready = true;
 
     var isAllChildrenProgramReady = function(){
@@ -42,15 +41,13 @@ var Command = (function () {
     };
 
     if(isAllChildrenProgramReady){
-      (new Sender(parentId)).command('program_ready');
+      Command.sendto(parentId).command('program_ready');
     }
-
   };
 
 
 
   Command.prototype.completed = function(sender,json){
-
     connections[sender.id].completed = true;
 
     var isAllChildrenCompleted = function(){
@@ -64,11 +61,9 @@ var Command = (function () {
     };
 
     if(isAllChildrenCompleted()){
-      (new Sender(parentId)).command('completed');
+      Command.sendto(parentId).command('completed');
     }
-
   };
-
 
   Command.prototype.request_dataset = function (sender, json) {
     json.size = json.size > 0 ? json.size : 0;
@@ -117,7 +112,7 @@ var Command = (function () {
 
   Command.broadcast = function (cmd, json) {
     childrenIds.forEach(function (id) {
-      (new Sender(id)).command(cmd, json);
+      Command.sendto(id).command(cmd, json);
     });
   };
 
@@ -126,7 +121,7 @@ var Command = (function () {
     log('commandRelay publisher:' + json.publisher);
     if (direction === 'upward') {
       if (!isRoot()) {
-        (new Sender(parentId)).command(cmd, json);
+        Command.sendto(parentId).command(cmd, json);
       } else {
         log('[Root Node]')
       }
@@ -152,7 +147,7 @@ var Command = (function () {
       case 'runout_dataset':
       case 'completed':
         log(cmd);
-        sender = new Sender(senderId);
+        sender = Command.sendto(senderId);
         command[cmd](sender, json);
         if (json.relay === 'upward') {
           Command.relay(cmd, sender, json, 'upward');
@@ -164,6 +159,10 @@ var Command = (function () {
       default:
         log('unknown');
     }
+  };
+
+  Command.sendto = function (id) {
+    return new Sender(id);
   };
 
   return Command;

@@ -10,7 +10,6 @@ $(function () {
   $('#btn-program').click(
     function () {
       Command.broadcast('program', {program:program, relay:'downward'});
-      log('not implemented:' + $('#program-status').val());
     }
   );
 
@@ -31,7 +30,7 @@ $(function () {
   $('#btn-dataset').click(
     function () {
       var size = Number($('#dataset-size').val());
-      (new Sender(parentId)).command('request_dataset', {size:size});
+      Command.sendto(parentId).command('request_dataset', {size:size});
     }
   );
 
@@ -39,8 +38,7 @@ $(function () {
     function () {
       var size = Number($('#rise-size').val());
       var subset = intermediatesStore.withdraw(size);
-      var sender = new Sender(parentId);
-      sender.command('intermediates', {intermediates:subset});
+      Command.sendto(parentId).command('intermediates', {intermediates:subset});
     }
   );
 });
