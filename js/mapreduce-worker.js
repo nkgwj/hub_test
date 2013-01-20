@@ -19,19 +19,19 @@ var MapReduceWorker = (function () {
     this.reduceWorker = new Worker(reduceObjectURL);
     this.mapWorker.onmessage = this.reduceWorker.onmessage = function (evt) {
       var json = evt.data;
-      log(JSON.stringify(json));
+      outputBox.log(JSON.stringify(json));
 
       switch (json.command) {
         case 'intermediates':
           if (json.intermediates) {
-            message('worker', 'send a intermediates (size=' + String(json.intermediates.length) + ')');
+            outputBox.message('worker', 'send a intermediates (size=' + String(json.intermediates.length) + ')');
             intermediatesStore.store(json.intermediates);
           } else {
-            log('invalid intermediates');
+            outputBox.log('invalid intermediates');
           }
           break;
         default:
-          log('Invalid commands(worker)');
+          outputBox.log('Invalid commands(worker)');
       }
     };
   }

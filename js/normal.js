@@ -19,12 +19,12 @@ $(function () {
 
   var join = function (projectName) {
     if (!validateProjectName(projectName)) {
-      log('error');
+      outputBox.log('error');
       return;
     }
 
     project = projectName;
-    log('Project:' + project);
+    outputBox.log('Project:' + project);
 
     projectsRef.off('child_added', onaddedproject);
     projectsRef.off('child_removed', onremovedproject);

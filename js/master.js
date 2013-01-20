@@ -5,7 +5,6 @@
  * Time: 18:22
  * To change this template use File | Settings | File Templates.
  */
-
 var project;
 var dataset;
 
@@ -48,15 +47,15 @@ $(function () {
       $('#config').attr('disabled', 'disabled').slideUp();
       $("#controller").slideDown();
 
-      log('Project:' + project);
-      log('Program:' + programFile.name);
-      log('DataSet:' + datasetFile.name);
+      outputBox.log('Project:' + project);
+      outputBox.log('Program:' + programFile.name);
+      outputBox.log('DataSet:' + datasetFile.name);
 
       programReader = new FileReader();
       programReader.readAsText(programFile);
       programReader.onload = function (evt) {
         program = evt.target.result;
-        message(programFile.name, $('<pre>').html(program));
+        outputBox.message(programFile.name, $('<pre>').html(program));
 
         if (program && dataset) {
           startUp();
@@ -67,7 +66,7 @@ $(function () {
       datasetReader.readAsText(datasetFile);
       datasetReader.onload = function (evt) {
         var datasetJSON = evt.target.result;
-        message(datasetFile.name, $('<pre>').html(datasetJSON));
+        outputBox.message(datasetFile.name, $('<pre>').html(datasetJSON));
         dataset = JSON.parse(datasetJSON);
 
         if (program && dataset) {

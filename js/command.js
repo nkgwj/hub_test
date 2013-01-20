@@ -3,13 +3,13 @@ var Command = (function () {
   }
 
   Command.prototype.request_program = function (sender, json) {
-    message(sender.id, 'requests a program');
+    outputBox.message(sender.id, 'requests a program');
     sender.command('program', {program:program});
   };
 
   Command.prototype.program = function (sender, json) {
     if (json.program) {
-      message(sender.id, 'send a program (size=' + String(json.program.length) + ')');
+      outputBox.message(sender.id, 'send a program (size=' + String(json.program.length) + ')');
       program = json.program;
       console.log(json.program);
 
@@ -23,7 +23,7 @@ var Command = (function () {
       }
 
     } else {
-      log('Invalid program');
+      outputbox.log('Invalid program');
     }
   };
 
@@ -67,25 +67,25 @@ var Command = (function () {
 
   Command.prototype.request_dataset = function (sender, json) {
     json.size = json.size > 0 ? json.size : 0;
-    message(sender.id, 'requests a dataset (size=' + String(json.size) + ')');
+    outputBox.message(sender.id, 'requests a dataset (size=' + String(json.size) + ')');
     var datasetSubset = datasetStore.withdraw(json.size);
     sender.command('dataset', {dataset:datasetSubset});
   };
 
   Command.prototype.dataset = function (sender, json) {
     if (json.dataset) {
-      message(sender.id, 'send a dataset (size=' + String(json.dataset.length) + ')');
+      outputBox.message(sender.id, 'send a dataset (size=' + String(json.dataset.length) + ')');
       datasetStore.store(json.dataset);
       console.log(json.dataset);
     } else {
-      log('invalid dataset');
+      outputBox.log('invalid dataset');
     }
 
   };
 
   Command.prototype.request_intermediates = function (sender, json) {
     json.size = json.size > 0 ? json.size : 0;
-    message(sender.id, 'requests a intermediates (size=' + String(json.size) + ')');
+    outputBox.message(sender.id, 'requests a intermediates (size=' + String(json.size) + ')');
     var intermediatesSubset = intermediatesStore.withdraw(json.size);
     sender.command('intermediates', {intermediates:intermediatesSubset});
 
@@ -93,19 +93,19 @@ var Command = (function () {
 
   Command.prototype.intermediates = function (sender, json) {
     if (json.intermediates) {
-      message(sender.id, 'send a intermediates (size=' + String(json.size) + ')');
+      outputBox.message(sender.id, 'send a intermediates (size=' + String(json.size) + ')');
       intermediatesStore.store(json.intermediates);
     } else {
-      log('invalid intermediates');
+      outputBox.log('invalid intermediates');
     }
   };
 
   Command.prototype.result = function (sender, json) {
-    message(sender.id, 'answer a result (result=' + String(json.result) + ')');
+    outputBox.message(sender.id, 'answer a result (result=' + String(json.result) + ')');
   };
 
   Command.prototype.runout_dataset = function(sender,json){
-    message(sender.id,'run out of dataset');
+    outputBox.message(sender.id,'run out of dataset');
     isParentRunoutDataset = true;
   };
 
@@ -118,18 +118,18 @@ var Command = (function () {
 
   Command.relay = function (cmd, sender, json, direction) {
     json.publisher |= sender.id;
-    log('commandRelay publisher:' + json.publisher);
+    outputBox.log('commandRelay publisher:' + json.publisher);
     if (direction === 'upward') {
       if (!isRoot()) {
         Command.sendto(parentId).command(cmd, json);
       } else {
-        log('[Root Node]')
+        outputBox.log('[Root Node]')
       }
     } else {
       if (!isLeaf()) {
         Command.broadcast(cmd, json)
       } else {
-        log('[Leaf Node]')
+        outputBox.log('[Leaf Node]')
       }
     }
   };
@@ -146,7 +146,7 @@ var Command = (function () {
       case 'result':
       case 'runout_dataset':
       case 'completed':
-        log(cmd);
+        outputBox.log(cmd);
         sender = Command.sendto(senderId);
         command[cmd](sender, json);
         if (json.relay === 'upward') {
@@ -157,7 +157,7 @@ var Command = (function () {
 
         break;
       default:
-        log('unknown');
+        outputBox.log('unknown');
     }
   };
 

@@ -18,7 +18,7 @@ var datasetStore = new DataStore();
 datasetStore.onrunout = function () {
   isRunoutDataset = isRoot() || isParentRunoutDataset;
   if (isRunoutDataset) {
-    log('dataset exhausted');
+    outputBox.log('dataset exhausted');
     if (!isLeaf()) {
       setImmediate(function(){
         Command.broadcast('runout_dataset')
@@ -26,7 +26,6 @@ datasetStore.onrunout = function () {
     }
   }
 };
-
 
 
 var command = new Command();
@@ -44,6 +43,9 @@ var projectRef, nextIdRef, nodesRef;
 var project;
 var myId, parentId;
 var childrenIds = [];
+
+var outputBox;
+
 
 function rise(size) {
   var subset = intermediatesStore.withdraw(size);
@@ -85,11 +87,11 @@ function isRoot() {
 
 function checkFeature() {
   if (!navigator.mozGetUserMedia) {
-    log('getUserMedia not supported.');
+    outputBox.log('getUserMedia not supported.');
     return false;
   }
   if (!window.mozRTCPeerConnection) {
-    log('PeerConnection not supported.');
+    outputBox.log('PeerConnection not supported.');
     return false;
   }
   return true;
@@ -99,25 +101,17 @@ function start() {
   if (!checkFeature()) {
     return;
   }
-  log('start');
-}
-
-function message(subject, body) {
-  $('#log').prepend($('<p>').addClass('message').append(
-    $('<span>').addClass('message-subject').html(subject)
-  ).append(
-    $('<span>').addClass('message-body').html(body)
-  ));
-}
-
-function log(msg) {
-  $('#log').prepend($('<p>').addClass('system-log').html(Array.apply(null, arguments).join('')));
 }
 
 function error() {
-  log('Error');
+  outputBox.log('Error');
 }
 
 function validateProjectName(projectName) {
   return (typeof projectName === 'string' && projectName != '');
 }
+
+
+$(function () {
+  outputBox = new OutputBox("#log");
+});
