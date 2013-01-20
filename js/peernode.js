@@ -6,21 +6,21 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var Sender = (function () {
-  function Sender(id) {
+var PeerNode = (function () {
+  function PeerNode(id) {
     this.id = id;
     this.dataChannel = connections[id].dataChannel;
   }
 
-  Sender.prototype.postMessage = function (str) {
+  PeerNode.prototype.postMessage = function (str) {
     this.dataChannel.send(JSON.stringify(str))
   };
 
-  Sender.prototype.command = function(command,parameter) {
+  PeerNode.prototype.command = function(command,parameter) {
     var message = typeof parameter === 'object' ? parameter : {};
     message.command = command;
     this.postMessage(message);
   };
 
-  return Sender;
+  return PeerNode;
 })();

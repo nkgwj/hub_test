@@ -162,7 +162,7 @@ var Command = (function () {
   };
 
   Command.sendto = function (id) {
-    return new Sender(id);
+    return new PeerNode(id);
   };
 
   return Command;
