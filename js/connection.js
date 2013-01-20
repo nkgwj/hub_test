@@ -49,14 +49,14 @@ function incomingOffer(offer, port, fromUser) {
           connections[fromUser].peerConnection = peerConnection;
           connections[fromUser].answererPort = connections[fromUser].offererPort + 1;
 
-          var toSend = {
+          var answerMessage = {
             type:'answer',
             sender:myId,
             port:connections[fromUser].answererPort,
             answer:JSON.stringify(answer)
           };
 
-          nodesRef.child(fromUser).child('queue').push(toSend);
+          nodesRef.child(fromUser).child('queue').push(answerMessage);
 
           setTimeout(function () {
             peerConnection.connectDataConnection(connections[fromUser].answererPort, connections[fromUser].offererPort);
@@ -130,14 +130,14 @@ function initiatePeerConnection() {
 
         connections[parentId].peerConnection = peerConnection;
         connections[parentId].offererPort = Math.floor(Math.random() * 5000) * 2;
-        var toSend = {
+        var offerMessage = {
           type:'offer',
           sender:myId,
           port:connections[parentId].offererPort,
           offer:JSON.stringify(offer)
         };
 
-        nodesRef.child(parentId).child('queue').push(toSend);
+        nodesRef.child(parentId).child('queue').push(offerMessage);
 
       }, error);
     }, error);
