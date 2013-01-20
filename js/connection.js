@@ -7,7 +7,7 @@ function incomingAnswer(answer, port, fromUser) {
   var peerConnection = connection.peerConnection;
 
   peerConnection.setRemoteDescription(JSON.parse(answer), function () {
-    log('Recieved a [answer]'); // + sdpbox(JSON.parse(answer).sdp));
+    log('Recieved a [answer]');
 
     log('[Session Description Negotiation Completed]');
     setTimeout(function () {
@@ -42,10 +42,10 @@ function incomingOffer(offer, port, fromUser) {
     peerConnection.setRemoteDescription(JSON.parse(offer), function () {
       log('Received a [offer]');
       peerConnection.createAnswer(function (answer) {
-        log('Created a [answer]');//+ sdpbox(answer.sdp))
+        log('Created a [answer]');
         peerConnection.setLocalDescription(answer, function () {
 
-          log('Sending:local -[answer]-> remote');// + sdpbox(JSON.parse(offer).sdp));
+          log('Sending:local -[answer]-> remote');
           connections[fromUser].peerConnection = peerConnection;
           connections[fromUser].answererPort = connections[fromUser].offererPort + 1;
 
@@ -123,7 +123,7 @@ function initiatePeerConnection() {
     };
 
     peerConnection.createOffer(function (offer) {
-      log('Created a [offer]');// + sdpbox(offer.sdp));
+      log('Created a [offer]');
 
       peerConnection.setLocalDescription(offer, function () {
         log('Sending:local -[offer]-> remote');

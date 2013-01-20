@@ -62,10 +62,6 @@ function checkFeature() {
   return true;
 }
 
-function sdpbox(sdp) {
-  return $('<textarea>').addClass('sdp').text(sdp)[0].outerHTML;
-}
-
 function start() {
   if (!checkFeature()) {
     return;
