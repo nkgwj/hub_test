@@ -1,4 +1,3 @@
-
 /**
  * Created with JetBrains WebStorm.
  * User: k-nkgwj
@@ -6,12 +5,6 @@
  * Time: 11:16
  * To change this template use File | Settings | File Templates.
  */
-
-function rise(size) {
-  var subset = intermediatesStore.withdraw(size);
-  Command.sendto(parentId).command('intermediates', {intermediates:subset});
-}
-
 $(function () {
   $('#btn-program').click(
     function () {

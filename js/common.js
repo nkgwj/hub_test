@@ -45,6 +45,11 @@ var project;
 var myId, parentId;
 var childrenIds = [];
 
+function rise(size) {
+  var subset = intermediatesStore.withdraw(size);
+  Command.sendto(parentId).command('intermediates', {intermediates:subset});
+}
+
 function listen(myId) {
   $('#myId').html(myId);
   parentId = Math.floor(myId / 2);
