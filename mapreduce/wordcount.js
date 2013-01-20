@@ -47,8 +47,7 @@ var MapReduce = (function () {
 
   MapReduce.prototype.reduce = function (intermediates) {
     var that = this;
-    var keys = Object.keys(intermediates);
-    keys.forEach(function (key) {
+    Object.keys(intermediates).forEach(function (key) {
       that.task.reduce(key, intermediates[key], function (key, value) {
         intermediates[key] = [value];
       })

@@ -16,13 +16,16 @@ var KeyValueStore = (function () {
   };
 
   KeyValueStore.prototype.store = function (keyValueTable) {
-    for (var key in keyValueTable) {
+    var that = this;
+
+    Object.keys(keyValueTable).forEach(function (key) {
       var value = keyValueTable[key];
       console.log(key, value);
-      var list = this.repository.get(key) || [];
+      var list = that.repository.get(key) || [];
       list = list.concat(value);
-      this.repository.set(key, list);
-    }
+      that.repository.set(key, list);
+    });
+
     return this.repository;
   };
 
