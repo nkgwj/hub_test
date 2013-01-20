@@ -43,8 +43,6 @@ $(function () {
       sender.command("intermediates", {intermediates:subset});
     }
   );
-
-
 });
 
 

@@ -41,6 +41,7 @@ function listen(myId) {
     }
   });
 }
+
 function isLeaf() {
   return childrenIds.length === 0;
 }

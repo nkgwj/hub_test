@@ -18,7 +18,6 @@ $(function () {
   };
 
   var join = function (projectName) {
-
     if (!validateProjectName(projectName)) {
       log("error");
       return;
@@ -32,7 +31,6 @@ $(function () {
 
     $('#config').attr('disabled', 'disabled').slideUp();
     $("#controller").slideDown();
-
 
     projectRef = projectsRef.child(project);
     projectRef.removeOnDisconnect();
