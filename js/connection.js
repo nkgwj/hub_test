@@ -42,7 +42,7 @@ function incomingOffer(offer, port, fromUser) {
     peerConnection.setRemoteDescription(JSON.parse(offer), function () {
       log('Received a [offer]');
       peerConnection.createAnswer(function (answer) {
-        log('Created a [answer]')//+ sdpbox(answer.sdp))
+        log('Created a [answer]');//+ sdpbox(answer.sdp))
         peerConnection.setLocalDescription(answer, function () {
 
           log('Sending:local -[answer]-> remote');// + sdpbox(JSON.parse(offer).sdp));
