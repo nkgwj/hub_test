@@ -20,6 +20,7 @@ var Command = (function () {
 
       gridProject = new GridProject(myId);
       gridProject.setup(program,datasetStore,intermediatesStore);
+      gridProject.createNodes();
       //initProject(program,datasetStore,intermediatesStore);
 
       console.log(mapReduceAgent);

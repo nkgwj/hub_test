@@ -15,11 +15,15 @@ var GridProject = (function () {
     mapReduceWorker = new MapReduceWorker(_program);
     mapReduceAgent = new MapReduceAgent(mapReduceWorker, _datasetStore, _intermediatesStore);
     mapReduceConductor = new MapReduceConductor(mapReduceAgent, parentId);
+  };
 
+  GridProject.prototype.createNodes = function ( ) {
+    var that = this;
     this.parentNode = new PeerNode(parentId);
 
     childrenIds.forEach(function (id) {
-      this.childNodes[id] = new PeerNode(id);
+      console.log(id,new PeerNode(id));
+      that.childNodes[id] = new PeerNode(id);
     });
   };
 
