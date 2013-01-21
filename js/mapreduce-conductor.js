@@ -7,12 +7,16 @@
  */
 
 var MapReduceConductor = (function () {
+  var parentNode;
   function MapReduceConductor(mapReduceAgent, parentId) {
     this.mapReduceAgent = mapReduceAgent;
     this.parentId = parentId;
     if(!isRoot()){
       this.parentNode = function(){
-        return Command.sendto(parentId);
+        if(typeof parentNode === 'undefined') {
+          parentNode = Command.sendto(parentId);
+        }
+        return parentNode;
       }
     }
   }
