@@ -21,9 +21,7 @@ var Command = (function () {
       gridProject = new GridProject(myId);
       gridProject.setup(program,datasetStore,intermediatesStore);
       gridProject.createNodes();
-      //initProject(program,datasetStore,intermediatesStore);
-
-      console.log(mapReduceAgent);
+      $('#controller').slideDown();
 
       if (isLeaf()) {
         Command.sendto(parentId).command('program_ready');
@@ -47,7 +45,9 @@ var Command = (function () {
 
     };
 
-    if (!isRoot() && isAllChildrenProgramReady) { //FIXME
+    if (isRoot()){
+      $('#controller').slideDown();
+    } else if(isAllChildrenProgramReady) { //FIXME
       Command.sendto(parentId).command('program_ready');
     }
   };

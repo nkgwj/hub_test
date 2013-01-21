@@ -81,10 +81,10 @@ textarea.sdp {
     width: 4em;
 }
 
-#controller > #program-status {
-    width: 2em;
-}
-
 #controller > .unused {
     display: none;
+}
+
+#btn-start {
+    display:none;
 }

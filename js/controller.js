@@ -6,9 +6,11 @@
  * To change this template use File | Settings | File Templates.
  */
 $(function () {
-  $('#btn-program').click(
+  $('#btn-start').click(
     function () {
       Command.broadcast('program', {program:program, relay:'downward'});
+      $('#btn-start').slideUp();
+
     }
   );
 

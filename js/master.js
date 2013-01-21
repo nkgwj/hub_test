@@ -23,9 +23,11 @@ $(function () {
 
     datasetStore.store(dataset);
 
-   var gridProject = new GridProject(myId);
+    var gridProject = new GridProject(myId);
     gridProject.setup(program,datasetStore,intermediatesStore);
-    //initProject(program,datasetStore,intermediatesStore);
+
+    $("#btn-start").slideDown();
+
   };
 
   var readFile = function (file, onload) {
@@ -59,7 +61,6 @@ $(function () {
       $("#program,#dataset,#project").val('');
 
       $('#config').attr('disabled', 'disabled').slideUp();
-      $("#controller").slideDown();
 
       outputBox.log('Project:' + project);
       outputBox.log('Program:' + programFile.name);

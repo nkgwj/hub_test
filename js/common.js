@@ -47,12 +47,6 @@ var childrenIds = [];
 
 var outputBox;
 
-function initProject(_program,_datasetStore,_intermediatesStore){
-  mapReduceWorker = new MapReduceWorker(_program);
-  mapReduceAgent = new MapReduceAgent(mapReduceWorker, _datasetStore, _intermediatesStore);
-  mapReduceConductor = new MapReduceConductor(mapReduceAgent, parentId);
-}
-
 function listen(myId) {
   $('#myId').html(myId);
   parentId = Math.floor(myId / 2);

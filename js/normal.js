@@ -31,7 +31,6 @@ $(function () {
     projectsRef.off('child_removed', onremovedproject);
 
     $('#config').attr('disabled', 'disabled').slideUp();
-    $('#controller').slideDown();
 
     projectRef = projectsRef.child(project);
     projectRef.removeOnDisconnect();
