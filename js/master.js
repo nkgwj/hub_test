@@ -23,10 +23,7 @@ $(function () {
 
     datasetStore.store(dataset);
 
-    mapReduceWorker = new MapReduceWorker(program);
-    mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
-    mapReduceConductor = new MapReduceConductor(mapReduceAgent);
-
+    initProject(program,datasetStore,intermediatesStore);
   };
 
   var readFile = function (file, onload) {

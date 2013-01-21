@@ -16,9 +16,8 @@ var Command = (function () {
       program = json.program;
       console.log(json.program);
 
-      mapReduceWorker = new MapReduceWorker(program);
-      mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
-      mapReduceConductor = new MapReduceConductor(mapReduceAgent, parentId);
+
+      initProject(program,datasetStore,intermediatesStore);
 
       console.log(mapReduceAgent);
 
