@@ -63,21 +63,6 @@ $(function () {
       outputBox.log('Program:' + programFile.name);
       outputBox.log('DataSet:' + datasetFile.name);
 
-      /*
-   programReader = new FileReader();
-      programReader.readAsText(programFile);
-      programReader.onload = function (evt) {
-        window.evt = evt;
-        console.dir(evt);
-        program = evt.target.result;
-        outputBox.message(programFile.name, $('<pre>').html(program));
-
-        if (program && dataset) {
-          startUp();
-        }
-      };
-       */
-
       readFile(programFile,function (fileName,fileContent) {
         outputBox.message(fileName, $('<pre>').html(fileContent));
         program = fileContent;
@@ -87,17 +72,15 @@ $(function () {
         }
       });
 
-      datasetReader = new FileReader();
-      datasetReader.readAsText(datasetFile);
-      datasetReader.onload = function (evt) {
-        var datasetJSON = evt.target.result;
-        outputBox.message(datasetFile.name, $('<pre>').html(datasetJSON));
-        dataset = JSON.parse(datasetJSON);
+      readFile(datasetFile,function (fileName,fileContent) {
+        outputBox.message(fileName, $('<pre>').html(fileContent));
+        dataset = JSON.parse(fileContent);
 
         if (program && dataset) {
           startUp();
         }
-      };
+      });
+
     }
   };
 
