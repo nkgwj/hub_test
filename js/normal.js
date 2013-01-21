@@ -46,7 +46,7 @@ $(function () {
         type:'request',
         sender:myId
       });
-      initiatePeerConnection();
+      initPeerConnection();
     });
   };
 

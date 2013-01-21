@@ -1,6 +1,6 @@
 var connections = {};
 
-function incomingAnswer(answer, port, fromUser) {
+function onAnswer(answer, port, fromUser) {
   connections[fromUser].answererPort = port || 5001;
   var connection = connections[fromUser];
 
@@ -17,7 +17,7 @@ function incomingAnswer(answer, port, fromUser) {
   }, error);
 }
 
-function incomingOffer(offer, port, fromUser) {
+function onOffer(offer, port, fromUser) {
   connections[fromUser] = {offererPort:port || 5000};
 
   navigator.mozGetUserMedia({audio:true, fake:true}, function (audioStream) {
@@ -98,7 +98,7 @@ function setupDataChannel(channel, localPC, remotePC) {
   return channel;
 }
 
-function initiatePeerConnection() {
+function initPeerConnection() {
   outputBox.log('Initiate a PeerConnection');
 
   connections[parentId] = {};

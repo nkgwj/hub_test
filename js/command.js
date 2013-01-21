@@ -44,7 +44,7 @@ var Command = (function () {
 
     };
 
-    if (isAllChildrenProgramReady) {
+    if (!isRoot() && isAllChildrenProgramReady) { //FIXME
       Command.sendto(parentId).command('program_ready');
     }
   };

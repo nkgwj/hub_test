@@ -60,9 +60,9 @@ function listen(myId) {
     var data = snapshot.val();
     snapshot.ref().remove();
     if (data.type === 'offer') {
-      incomingOffer(data.offer, data.port, data.sender);
+      onOffer(data.offer, data.port, data.sender);
     } else if (data.type === 'answer') {
-      incomingAnswer(data.answer, data.port, data.sender);
+      onAnswer(data.answer, data.port, data.sender);
     }
 
   });
