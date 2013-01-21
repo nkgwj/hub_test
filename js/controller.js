@@ -15,28 +15,28 @@ $(function () {
   $('#btn-map').click(
     function () {
       var size = Number($('#map-size').val());
-      mapReduceAgent.map(size);
+      mapReduceConductor.map(size);
     }
   );
 
   $('#btn-reduce').click(
     function () {
       var size = Number($('#reduce-size').val());
-      mapReduceAgent.reduce(size);
+      mapReduceConductor.reduce(size);
     }
   );
 
   $('#btn-dataset').click(
     function () {
       var size = Number($('#dataset-size').val());
-      Command.sendto(parentId).command('request_dataset', {size:size});
+      mapReduceConductor.dataset(size);
     }
   );
 
   $('#btn-rise').click(
     function () {
       var size = Number($('#rise-size').val());
-      rise(size);
+      mapReduceConductor.rise(size);
     }
   );
 });

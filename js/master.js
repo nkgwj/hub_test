@@ -25,6 +25,7 @@ $(function () {
 
     mapReduceWorker = new MapReduceWorker(program);
     mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
+    mapReduceConductor = new MapReduceConductor(mapReduceAgent);
 
   };
 

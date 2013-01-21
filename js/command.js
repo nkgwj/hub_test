@@ -16,8 +16,9 @@ var Command = (function () {
       console.log(json.program);
 
       mapReduceWorker = new MapReduceWorker(program);
-
       mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
+      mapReduceConductor = new MapReduceConductor(mapReduceAgent,parentId);
+
       console.log(mapReduceAgent);
 
       if(isLeaf()){

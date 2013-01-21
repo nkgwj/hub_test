@@ -36,6 +36,7 @@ var isRunoutDataset;
 var intermediatesStore = new KeyValueStore();
 
 var mapReduceAgent;
+var mapReduceConductor;
 
 var mainRef = new Firebase('https://rtc.firebaseio.com/hub_test_v1/');
 var projectsRef = mainRef.child('projects');
@@ -44,12 +45,6 @@ var myId, parentId;
 var childrenIds = [];
 
 var outputBox;
-
-
-function rise(size) {
-  var subset = intermediatesStore.withdraw(size);
-  Command.sendto(parentId).command('intermediates', {intermediates:subset});
-}
 
 function listen(myId) {
   $('#myId').html(myId);
