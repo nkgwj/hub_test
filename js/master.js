@@ -47,6 +47,9 @@ $(function () {
     var programReader;
     var datasetReader;
 
+    var dfdProgramLoad = $.Deferred();
+    var dfdDatasetLoad = $.Deferred();
+
     project = $('#project').val();
     programFile = $('#program')[0].files[0];
     datasetFile = $('#dataset')[0].files[0];
@@ -63,22 +66,18 @@ $(function () {
       outputBox.log('Program:' + programFile.name);
       outputBox.log('DataSet:' + datasetFile.name);
 
+      $.when(dfdProgramLoad,dfdDatasetLoad).done(startUp);
+
       readFile(programFile,function (fileName,fileContent) {
         outputBox.message(fileName, $('<pre>').html(fileContent));
         program = fileContent;
-
-        if (program && dataset) {
-          startUp();
-        }
+        dfdProgramLoad.resolve();
       });
 
       readFile(datasetFile,function (fileName,fileContent) {
         outputBox.message(fileName, $('<pre>').html(fileContent));
         dataset = JSON.parse(fileContent);
-
-        if (program && dataset) {
-          startUp();
-        }
+        dfdDatasetLoad.resolve();
       });
 
     }
