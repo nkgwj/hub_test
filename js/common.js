@@ -15,7 +15,7 @@ if (!window.setImmediate) {
 
 var datasetStore = new DataStore();
 
-datasetStore.onrunout = function () {
+datasetStore.onempty = function () {
   isRunoutDataset = isRoot() || isParentRunoutDataset;
   if (isRunoutDataset) {
     outputBox.log('dataset exhausted');

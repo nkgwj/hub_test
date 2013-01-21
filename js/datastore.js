@@ -9,7 +9,7 @@
 var DataStore = (function () {
   function DataStore(dataArray) {
     this.repository = dataArray || [];
-    this.onrunout = function(){};
+    this.onempty = function(){};
   }
 
   DataStore.prototype.store = function (dataArray) {
@@ -20,7 +20,7 @@ var DataStore = (function () {
   DataStore.prototype.withdraw = function (size) {
     subset = this.repository.splice(0, size);
     if (this.isEmpty()) {
-      this.onrunout();
+      this.onempty();
     }
 
     return subset;
