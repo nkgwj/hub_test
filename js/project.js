@@ -17,6 +17,7 @@ var GridProject = (function () {
     mapReduceConductor = new MapReduceConductor(mapReduceAgent, parentId);
   };
 
+  /*
   GridProject.prototype.createNodes = function ( ) {
     var that = this;
     this.parentNode = new PeerNode(parentId);
@@ -34,6 +35,7 @@ var GridProject = (function () {
   GridProject.prototype.isRoot = function() {
     return parentId === 0;
   };
+  */
 
   GridProject.validateProjectName = function(projectName) {
     return (typeof projectName === 'string' && projectName != '');

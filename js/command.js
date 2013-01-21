@@ -20,7 +20,7 @@ var Command = (function () {
 
       gridProject = new GridProject(myId);
       gridProject.setup(program,datasetStore,intermediatesStore);
-      gridProject.createNodes();
+      //gridProject.createNodes();
       $('#controller').slideDown();
 
       if (isLeaf()) {
