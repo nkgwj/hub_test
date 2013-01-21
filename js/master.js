@@ -29,6 +29,18 @@ $(function () {
 
   };
 
+  var readFile = function (file,onload) {
+    var reader = new FileReader();
+
+    reader.readAsText(file);
+    reader.onload = function (evt) {
+      var fileContent = evt.target.result;
+      onload(file.name,fileContent);
+    };
+
+    return reader;
+  };
+
   var setUp = function () {
     var programFile;
     var datasetFile;
@@ -51,9 +63,12 @@ $(function () {
       outputBox.log('Program:' + programFile.name);
       outputBox.log('DataSet:' + datasetFile.name);
 
-      programReader = new FileReader();
+      /*
+   programReader = new FileReader();
       programReader.readAsText(programFile);
       programReader.onload = function (evt) {
+        window.evt = evt;
+        console.dir(evt);
         program = evt.target.result;
         outputBox.message(programFile.name, $('<pre>').html(program));
 
@@ -61,6 +76,16 @@ $(function () {
           startUp();
         }
       };
+       */
+
+      readFile(programFile,function (fileName,fileContent) {
+        outputBox.message(fileName, $('<pre>').html(fileContent));
+        program = fileContent;
+
+        if (program && dataset) {
+          startUp();
+        }
+      });
 
       datasetReader = new FileReader();
       datasetReader.readAsText(datasetFile);
