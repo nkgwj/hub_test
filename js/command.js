@@ -122,7 +122,7 @@ var Command = (function () {
   };
 
   Command.relay = function (cmd, sender, json, direction) {
-    json.publisher |= sender.id;
+    json.publisher = json.publisher || sender.id;
     outputBox.log('commandRelay publisher:' + json.publisher);
     if (direction === 'upward') {
       if (!isRoot()) {

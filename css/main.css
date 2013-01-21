@@ -2,6 +2,9 @@ header {
     margin:1em;
 }
 
+fieldset {
+    margin-left: 15px;
+}
 textarea.sdp {
     min-width:640px;
     min-height:10em;
@@ -87,4 +90,5 @@ textarea.sdp {
 
 #btn-start {
     display:none;
+    margin-left:15px;
 }
