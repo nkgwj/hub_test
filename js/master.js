@@ -48,39 +48,40 @@ $(function () {
     var programReader;
     var datasetReader;
 
-    var dfdProgramLoad = $.Deferred();
-    var dfdDatasetLoad = $.Deferred();
-
     project = $('#project').val();
     programFile = $('#program')[0].files[0];
     datasetFile = $('#dataset')[0].files[0];
 
-    if (validateProjectName(project) &&
-      programFile && datasetFile) {
-
-      $("#program,#dataset,#project").val('');
-
-      $('#config').attr('disabled', 'disabled').slideUp();
-
-      outputBox.log('Project:' + project);
-      outputBox.log('Program:' + programFile.name);
-      outputBox.log('DataSet:' + datasetFile.name);
-
-      $.when(dfdProgramLoad, dfdDatasetLoad).done(startUp);
-
-      readFile(programFile, function (fileName, fileContent) {
-        outputBox.message(fileName, $('<pre>').html(fileContent));
-        program = fileContent;
-        dfdProgramLoad.resolve();
-      });
-
-      readFile(datasetFile, function (fileName, fileContent) {
-        outputBox.message(fileName, $('<pre>').html(fileContent));
-        dataset = JSON.parse(fileContent);
-        dfdDatasetLoad.resolve();
-      });
-
+    if (!(programFile && datasetFile &&
+      GridProject.validateProjectName(project))) {
+      console.error("error: project name");
+      return;
     }
+
+    $("#program,#dataset,#project").val('');
+    $('#config').attr('disabled', 'disabled').slideUp();
+
+    outputBox.log('Project:' + project);
+    outputBox.log('Program:' + programFile.name);
+    outputBox.log('DataSet:' + datasetFile.name);
+
+    var dfdProgramLoad = $.Deferred();
+    var dfdDatasetLoad = $.Deferred();
+
+    $.when(dfdProgramLoad, dfdDatasetLoad).done(startUp);
+
+    readFile(programFile, function (fileName, fileContent) {
+      outputBox.message(fileName, $('<pre>').html(fileContent));
+      program = fileContent;
+      dfdProgramLoad.resolve();
+    });
+
+    readFile(datasetFile, function (fileName, fileContent) {
+      outputBox.message(fileName, $('<pre>').html(fileContent));
+      dataset = JSON.parse(fileContent);
+      dfdDatasetLoad.resolve();
+    });
+
   };
 
   $('#setup').click(setUp);

@@ -19,8 +19,8 @@ $(function () {
   };
 
   var join = function (projectName) {
-    if (!validateProjectName(projectName)) {
-      outputBox.log('error');
+    if (!GridProject.validateProjectName(projectName)) {
+      console.log('error:project name');
       return;
     }
 

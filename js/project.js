@@ -34,5 +34,12 @@ var GridProject = (function () {
   GridProject.prototype.isRoot = function() {
     return parentId === 0;
   };
+
+  GridProject.validateProjectName = function(projectName) {
+    return (typeof projectName === 'string' && projectName != '');
+  };
+
+
   return GridProject;
+
 })();
