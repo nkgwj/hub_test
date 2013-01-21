@@ -23,6 +23,8 @@ $(function () {
 
     datasetStore.store(dataset);
 
+/*    var gridProject = new GridProject(myId);
+    gridProject.setup(program,datasetStore,intermediatesStore);*/
     initProject(program,datasetStore,intermediatesStore);
   };
 

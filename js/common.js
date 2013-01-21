@@ -29,6 +29,8 @@ datasetStore.onempty = function () {
 
 var command = new Command();
 
+var project;
+
 var isParentRunoutDataset;
 var isRunoutDataset;
 

@@ -1,3 +1,5 @@
+var gridProject;
+
 var Command = (function () {
   var _command;
 
@@ -16,8 +18,9 @@ var Command = (function () {
       program = json.program;
       console.log(json.program);
 
-
-      initProject(program,datasetStore,intermediatesStore);
+      gridProject = new GridProject(myId);
+      gridProject.setup(program,datasetStore,intermediatesStore);
+      //initProject(program,datasetStore,intermediatesStore);
 
       console.log(mapReduceAgent);
 
