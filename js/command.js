@@ -1,5 +1,6 @@
 var Command = (function () {
   var _command;
+
   function Command() {
     _command = this;
   }
@@ -17,11 +18,11 @@ var Command = (function () {
 
       mapReduceWorker = new MapReduceWorker(program);
       mapReduceAgent = new MapReduceAgent(mapReduceWorker, datasetStore, intermediatesStore);
-      mapReduceConductor = new MapReduceConductor(mapReduceAgent,parentId);
+      mapReduceConductor = new MapReduceConductor(mapReduceAgent, parentId);
 
       console.log(mapReduceAgent);
 
-      if(isLeaf()){
+      if (isLeaf()) {
         Command.sendto(parentId).command('program_ready');
       }
 
@@ -30,40 +31,38 @@ var Command = (function () {
     }
   };
 
-  Command.prototype.program_ready = function(sender,json){
+  Command.prototype.program_ready = function (sender, json) {
     connections[sender.id].program_ready = true;
 
-    var isAllChildrenProgramReady = function(){
+    var isAllChildrenProgramReady = function () {
 
-      return childrenIds.map(function(id){
+      return childrenIds.map(function (id) {
         return connections[id].program_ready
-      }).reduce(function(a,b){
+      }).reduce(function (a, b) {
           return a && b;
         });
 
     };
 
-    if(isAllChildrenProgramReady){
+    if (isAllChildrenProgramReady) {
       Command.sendto(parentId).command('program_ready');
     }
   };
 
-
-
-  Command.prototype.completed = function(sender,json){
+  Command.prototype.completed = function (sender, json) {
     connections[sender.id].completed = true;
 
-    var isAllChildrenCompleted = function(){
+    var isAllChildrenCompleted = function () {
 
-      return childrenIds.map(function(id){
+      return childrenIds.map(function (id) {
         return connections[id].completed;
-      }).reduce(function(a,b){
+      }).reduce(function (a, b) {
           return a && b;
         });
 
     };
 
-    if(isAllChildrenCompleted()){
+    if (isAllChildrenCompleted()) {
       Command.sendto(parentId).command('completed');
     }
   };
@@ -107,8 +106,8 @@ var Command = (function () {
     outputBox.message(sender.id, 'answer a result (result=' + String(json.result) + ')');
   };
 
-  Command.prototype.runout_dataset = function(sender,json){
-    outputBox.message(sender.id,'run out of dataset');
+  Command.prototype.runout_dataset = function (sender, json) {
+    outputBox.message(sender.id, 'run out of dataset');
     isParentRunoutDataset = true;
   };
 

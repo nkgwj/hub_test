@@ -8,12 +8,13 @@
 
 var MapReduceConductor = (function () {
   var parentNode;
+
   function MapReduceConductor(mapReduceAgent, parentId) {
     this.mapReduceAgent = mapReduceAgent;
     this.parentId = parentId;
-    if(!isRoot()){
-      this.parentNode = function(){
-        if(typeof parentNode === 'undefined') {
+    if (!isRoot()) {
+      this.parentNode = function () {
+        if (typeof parentNode === 'undefined') {
           parentNode = Command.sendto(parentId);
         }
         return parentNode;
@@ -30,7 +31,7 @@ var MapReduceConductor = (function () {
   };
 
   MapReduceConductor.prototype.rise = function (size) {
-    if(!isRoot()){
+    if (!isRoot()) {
       var subset = intermediatesStore.withdraw(size);
       this.parentNode().command('intermediates', {intermediates:subset});
     } else {
@@ -39,7 +40,7 @@ var MapReduceConductor = (function () {
   };
 
   MapReduceConductor.prototype.dataset = function (size) {
-    if(!isRoot()){
+    if (!isRoot()) {
       this.parentNode().command('request_dataset', {size:size});
     } else {
       console.error("cannot request dataset at root node");

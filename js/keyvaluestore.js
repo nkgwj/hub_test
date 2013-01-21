@@ -29,7 +29,7 @@ var KeyValueStore = (function () {
     return this.repository;
   };
 
-  KeyValueStore.prototype.withdraw = function (size,isSkipReduced) {
+  KeyValueStore.prototype.withdraw = function (size, isSkipReduced) {
     var isAllReduced = true;
     var iterator = this.iterator();
 

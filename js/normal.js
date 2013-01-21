@@ -8,7 +8,7 @@
 
 $(function () {
   var project;
-  var onaddedproject = function(addedProject) {
+  var onaddedproject = function (addedProject) {
     var option = $('<option>').attr('value', addedProject.name()).html(addedProject.name());
     $('#project').append(option);
   };
@@ -53,7 +53,7 @@ $(function () {
   projectsRef.on('child_added', onaddedproject);
   projectsRef.on('child_removed', onremovedproject);
 
-  $('#join').click(function (){
+  $('#join').click(function () {
     join($('#project').val());
   });
 });

@@ -18,7 +18,7 @@ function incomingAnswer(answer, port, fromUser) {
 }
 
 function incomingOffer(offer, port, fromUser) {
-  connections[fromUser] = {offererPort: port || 5000};
+  connections[fromUser] = {offererPort:port || 5000};
 
   navigator.mozGetUserMedia({audio:true, fake:true}, function (audioStream) {
 
@@ -87,11 +87,11 @@ function setupDataChannel(channel, localPC, remotePC) {
   };
 
   channel.onopen = function () {
-    outputBox.log('DataChannel opened for (label=' + channel.label+'):' + channel.readyState);
+    outputBox.log('DataChannel opened for (label=' + channel.label + '):' + channel.readyState);
   };
 
   channel.onclose = function () {
-    outputBox.log('DataChannel closed for (label=' + channel.label+'):' + channel.readyState);
+    outputBox.log('DataChannel closed for (label=' + channel.label + '):' + channel.readyState);
   };
 
   outputBox.log('DataChannel:' + channel.readyState);

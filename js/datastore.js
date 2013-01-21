@@ -9,7 +9,7 @@
 var DataStore = (function () {
   function DataStore(dataArray) {
     this.repository = dataArray || [];
-    this.onempty = function(){};
+    this.onempty = new Function();
   }
 
   DataStore.prototype.store = function (dataArray) {

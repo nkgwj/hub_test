@@ -21,15 +21,15 @@ var MapReduceWorker = (function () {
       var json = evt.data;
       outputBox.log(JSON.stringify(json));
 
-      if (json.command === 'intermediates'){
-          if (json.intermediates) {
-            outputBox.message('worker', 'send a intermediates (size=' + String(json.intermediates.length) + ')');
-            intermediatesStore.store(json.intermediates);
-          } else {
-            outputBox.log('invalid intermediates');
-          }
+      if (json.command === 'intermediates') {
+        if (json.intermediates) {
+          outputBox.message('worker', 'send a intermediates (size=' + String(json.intermediates.length) + ')');
+          intermediatesStore.store(json.intermediates);
+        } else {
+          outputBox.log('invalid intermediates');
+        }
       } else {
-          outputBox.log('Invalid commands(worker)');
+        outputBox.log('Invalid commands(worker)');
       }
     };
   }

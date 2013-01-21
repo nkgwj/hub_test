@@ -29,13 +29,13 @@ $(function () {
 
   };
 
-  var readFile = function (file,onload) {
+  var readFile = function (file, onload) {
     var reader = new FileReader();
 
     reader.readAsText(file);
     reader.onload = function (evt) {
       var fileContent = evt.target.result;
-      onload(file.name,fileContent);
+      onload(file.name, fileContent);
     };
 
     return reader;
@@ -66,15 +66,15 @@ $(function () {
       outputBox.log('Program:' + programFile.name);
       outputBox.log('DataSet:' + datasetFile.name);
 
-      $.when(dfdProgramLoad,dfdDatasetLoad).done(startUp);
+      $.when(dfdProgramLoad, dfdDatasetLoad).done(startUp);
 
-      readFile(programFile,function (fileName,fileContent) {
+      readFile(programFile, function (fileName, fileContent) {
         outputBox.message(fileName, $('<pre>').html(fileContent));
         program = fileContent;
         dfdProgramLoad.resolve();
       });
 
-      readFile(datasetFile,function (fileName,fileContent) {
+      readFile(datasetFile, function (fileName, fileContent) {
         outputBox.message(fileName, $('<pre>').html(fileContent));
         dataset = JSON.parse(fileContent);
         dfdDatasetLoad.resolve();

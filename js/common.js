@@ -7,7 +7,7 @@
  */
 
 if (!window.setImmediate) {
-  window.setImmediate = function(func, args){
+  window.setImmediate = function (func, args) {
     return window.setTimeout(func, 0, args);
   };
   window.clearImmediate = window.clearTimeout;
@@ -20,13 +20,12 @@ datasetStore.onempty = function () {
   if (isRunoutDataset) {
     outputBox.log('dataset exhausted');
     if (!isLeaf()) {
-      setImmediate(function(){
+      setImmediate(function () {
         Command.broadcast('runout_dataset')
       });
     }
   }
 };
-
 
 var command = new Command();
 
@@ -60,9 +59,9 @@ function listen(myId) {
   nodesRef.child(myId).child('queue').on('child_added', function (snapshot) {
     var data = snapshot.val();
     snapshot.ref().remove();
-    if (data.type === 'offer'){
+    if (data.type === 'offer') {
       incomingOffer(data.offer, data.port, data.sender);
-    } else if(data.type === 'answer'){
+    } else if (data.type === 'answer') {
       incomingAnswer(data.answer, data.port, data.sender);
     }
 

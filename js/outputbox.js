@@ -11,7 +11,7 @@ var OutputBox = (function () {
     this.jqueryObject = $(selector);
   }
 
-  OutputBox.prototype.message = function (subject,body) {
+  OutputBox.prototype.message = function (subject, body) {
     $(this.jqueryObject).prepend($('<p>').addClass('message').append(
       $('<span>').addClass('message-subject').html(subject)
     ).append(

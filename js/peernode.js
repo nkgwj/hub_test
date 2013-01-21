@@ -16,7 +16,7 @@ var PeerNode = (function () {
     this.dataChannel.send(JSON.stringify(str))
   };
 
-  PeerNode.prototype.command = function(command,parameter) {
+  PeerNode.prototype.command = function (command, parameter) {
     var message = typeof parameter === 'object' ? parameter : {};
     message.command = command;
     this.postMessage(message);
