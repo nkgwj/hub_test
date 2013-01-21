@@ -137,29 +137,18 @@ var Command = (function () {
   };
 
   Command.dispatch = function (cmd, senderId, json) {
-    var sender;
-    switch (cmd) {
-      case 'request_dataset':
-      case 'dataset':
-      case 'request_program':
-      case 'program':
-      case 'request_intermediates':
-      case 'intermediates':
-      case 'result':
-      case 'runout_dataset':
-      case 'completed':
-        outputBox.log(cmd);
-        sender = Command.sendto(senderId);
-        _command[cmd](sender, json);
-        if (json.relay === 'upward') {
-          Command.relay(cmd, sender, json, 'upward');
-        } else if (json.relay === 'downward') {
-          Command.relay(cmd, sender, json, 'downward');
-        }
+    if (_command[cmd]) {
+      outputBox.log(cmd);
+      var sender = Command.sendto(senderId);
+      _command[cmd](sender, json);
 
-        break;
-      default:
-        outputBox.log('unknown');
+      if (json.relay === 'upward') {
+        Command.relay(cmd, sender, json, 'upward');
+      } else if (json.relay === 'downward') {
+        Command.relay(cmd, sender, json, 'downward');
+      }
+    } else {
+      outputBox.log('unknown');
     }
   };
 
