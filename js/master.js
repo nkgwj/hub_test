@@ -45,8 +45,6 @@ $(function () {
   var setUp = function () {
     var programFile;
     var datasetFile;
-    var programReader;
-    var datasetReader;
 
     project = $('#project').val();
     programFile = $('#program')[0].files[0];
@@ -54,11 +52,11 @@ $(function () {
 
     if (!(programFile && datasetFile &&
       GridProject.validateProjectName(project))) {
-      console.error("error: project name");
+      console.error('error: project name');
       return;
     }
 
-    $("#program,#dataset,#project").val('');
+    $('#program,#dataset,#project').val('');
     $('#config').attr('disabled', 'disabled').slideUp();
 
     outputBox.log('Project:' + project);
@@ -78,7 +76,9 @@ $(function () {
 
     readFile(datasetFile, function (fileName, fileContent) {
       outputBox.message(fileName, $('<pre>').html(fileContent));
-      dataset = JSON.parse(fileContent);
+      //dataset = JSON.parse(fileContent);
+      dataset = fileContent.replace(/\r\n/,"\n").split(/\n/);
+
       dfdDatasetLoad.resolve();
     });
 

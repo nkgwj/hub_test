@@ -3,7 +3,7 @@ var WordCount = (function () {
   }
 
   WordCount.prototype.map = function (item, emit) {
-    var splitted = item.split(/\s/g);
+    var splitted = item.split(/\s+/g);
     splitted.forEach(function (word) {
       emit(word, 1)
     })
