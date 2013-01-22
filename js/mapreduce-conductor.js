@@ -26,8 +26,17 @@ var MapReduceConductor = (function () {
     this.isMapProcessing = false;
     this.isReduceProcessing = false;
     this.isRequestWaiting = false;
-    this.agent.worker.mapWorker.onmessage = this.onMapMessage;
-    this.agent.worker.reduceWorker.onmessage = this.onReduceMessage;
+    this.agent.worker.mapWorker.onmessage = this.onMapMessage.bind(this);
+    this.agent.worker.reduceWorker.onmessage = this.onReduceMessage.bind(this);
+
+    this.requestThreshold = 1;
+    this.incrementalReduceThreshold = 1;
+
+    this.requestDatasetSize = 1;
+    this.mapSize = 1;
+    this.ReduceSize = 1;
+
+
 
   }
 
@@ -74,16 +83,45 @@ var MapReduceConductor = (function () {
   };
 
   MapReduceConductor.prototype.onMapMessage = function (evt) {
-    that.isMapProcessing = false;
-    that.processMessage('MapWorker', evt.data);
+    this.isMapProcessing = false;
+    this.processMessage('MapWorker', evt.data);
   };
 
   MapReduceConductor.prototype.onReduceMessage = function (evt) {
-    that.isReduceProcessing = false;
-    that.processMessage( 'ReduceWorker', evt.data);
+    this.isReduceProcessing = false;
+    this.processMessage( 'ReduceWorker', evt.data);
   };
 
+  MapReduceConductor.prototype.onDataset = function(_dataset){
+    this.isRequestWaiting = false;
 
+    this.agent.datasetStore.store(_dataset);
+    console.log(_dataset);
+  };
+
+  MapReduceConductor.prototype.action = function(){
+
+    if(!this.isRequestWaiting){
+      if(this.agent.datasetStore.size() < this.requestThreshold){
+        console.log('c:request_dataset');
+        this.isRequestWaiting = true;
+        this.dataset(this.requestDatasetSize);
+      }
+    }
+
+    if(!this.isMapProcessing){
+      if(this.agent.datasetStore.size() >= 1){
+        console.log('c:map');
+        this.isMapProcessing = true;
+        this.map(this.mapSize);
+      }
+    }
+/*
+    if(!isReduceProcessing){
+      this.isReduceProcessing = true;
+    }
+*/
+  };
 
   return MapReduceConductor;
 })();

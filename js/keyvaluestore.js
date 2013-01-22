@@ -54,5 +54,9 @@ var KeyValueStore = (function () {
     return intermediates; // if(isAllReduced === false) return null
   };
 
+
+  KeyValueStore.prototype.size = function(){
+    return this.repository.size;
+  };
   return KeyValueStore;
 })();

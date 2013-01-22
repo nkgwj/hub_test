@@ -80,8 +80,7 @@ var Command = (function () {
   Command.prototype.dataset = function (sender, json) {
     if (json.dataset) {
       outputBox.message(sender.id, 'send a dataset (size=' + String(json.dataset.length) + ')');
-      datasetStore.store(json.dataset);
-      console.log(json.dataset);
+      mapReduceConductor.onDataset(json.dataset);
     } else {
       outputBox.log('invalid dataset');
     }
