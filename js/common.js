@@ -36,7 +36,7 @@ var isRunoutDataset;
 
 var intermediatesStore = new KeyValueStore();
 
-var mapReduceAgent;
+var agent;
 var mapReduceConductor;
 
 var mainRef = new Firebase('https://rtc.firebaseio.com/hub_test_v1/');

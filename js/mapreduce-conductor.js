@@ -8,10 +8,12 @@
 
 var MapReduceConductor = (function () {
   var parentNode;
-
+  var that;
   function MapReduceConductor(mapReduceAgent, parentId) {
-    this.mapReduceAgent = mapReduceAgent;
+    that = this;
+    this.agent = mapReduceAgent;
     this.parentId = parentId;
+
     if (!isRoot()) {
       this.parentNode = function () {
         if (typeof parentNode === 'undefined') {
@@ -20,19 +22,28 @@ var MapReduceConductor = (function () {
         return parentNode;
       }
     }
+
+    this.isMapProcessing = false;
+    this.isReduceProcessing = false;
+    this.isRequestWaiting = false;
+    this.agent.worker.mapWorker.onmessage = this.onMapMessage;
+    this.agent.worker.reduceWorker.onmessage = this.onReduceMessage;
+
   }
 
   MapReduceConductor.prototype.map = function (size) {
-    this.mapReduceAgent.map(size);
+    this.isMapProcessing = true;
+    this.agent.map(size);
   };
 
   MapReduceConductor.prototype.reduce = function (size) {
-    this.mapReduceAgent.reduce(size);
+    this.isReduceProcessing = true;
+    this.agent.reduce(size);
   };
 
   MapReduceConductor.prototype.rise = function (size) {
     if (!isRoot()) {
-      var subset = intermediatesStore.withdraw(size);
+      var subset = that.agent.intermediatesStore.withdraw(size);
       this.parentNode().command('intermediates', {intermediates:subset});
     } else {
       console.error("cannot rise at root node");
@@ -46,6 +57,33 @@ var MapReduceConductor = (function () {
       console.error("cannot request dataset at root node");
     }
   };
+
+  MapReduceConductor.prototype.processMessage = function (workerName,json) {
+    outputBox.log(JSON.stringify(json));
+
+    if (json.command === 'intermediates') {
+      if (json.intermediates) {
+        outputBox.message(workerName, 'send a intermediates (size=' + String(Object.keys(json.intermediates).length) + ')');
+        that.agent.intermediatesStore.store(json.intermediates);
+      } else {
+        outputBox.log('invalid intermediates');
+      }
+    } else {
+      outputBox.log('Invalid commands(' + workerName + ')');
+    }
+  };
+
+  MapReduceConductor.prototype.onMapMessage = function (evt) {
+    that.isMapProcessing = false;
+    that.processMessage('MapWorker', evt.data);
+  };
+
+  MapReduceConductor.prototype.onReduceMessage = function (evt) {
+    that.isReduceProcessing = false;
+    that.processMessage( 'ReduceWorker', evt.data);
+  };
+
+
 
   return MapReduceConductor;
 })();

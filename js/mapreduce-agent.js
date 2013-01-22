@@ -15,12 +15,12 @@ var MapReduceAgent = (function () {
 
   MapReduceAgent.prototype.map = function (size) {
     var subset = this.datasetStore.withdraw(size);
-    mapReduceWorker.map(subset);
+    this.worker.map(subset);
   };
 
   MapReduceAgent.prototype.reduce = function (size) {
     var subset = this.intermediatesStore.withdraw(size, true);
-    mapReduceWorker.reduce(subset);
+    this.worker.reduce(subset);
   };
 
   return MapReduceAgent;

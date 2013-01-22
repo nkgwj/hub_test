@@ -17,6 +17,7 @@ var MapReduceWorker = (function () {
 
     this.mapWorker = new Worker(mapObjectURL);
     this.reduceWorker = new Worker(reduceObjectURL);
+    /*
     this.mapWorker.onmessage = this.reduceWorker.onmessage = function (evt) {
       var json = evt.data;
       outputBox.log(JSON.stringify(json));
@@ -31,7 +32,7 @@ var MapReduceWorker = (function () {
       } else {
         outputBox.log('Invalid commands(worker)');
       }
-    };
+    };*/
   }
 
   MapReduceWorker.prototype.map = function (subsetDataset) {
