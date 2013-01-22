@@ -9,7 +9,7 @@
 var MapReduceConductor = (function () {
   var parentNode;
   var that;
-  function MapReduceConductor(mapReduceAgent, parentId) {
+  function MapReduceConductor(mapReduceAgent, parentId,cfg) {
     that = this;
     this.agent = mapReduceAgent;
     this.parentId = parentId;
@@ -29,12 +29,13 @@ var MapReduceConductor = (function () {
     this.agent.worker.mapWorker.onmessage = this.onMapMessage.bind(this);
     this.agent.worker.reduceWorker.onmessage = this.onReduceMessage.bind(this);
 
-    this.requestThreshold = 1;
-    this.incrementalReduceThreshold = 1;
+    this.requestThreshold = cfg.default.requestThreshold;
+    this.incrementalReduceThreshold = cfg.default.incrementalReduceThreshold;
 
-    this.requestDatasetSize = 1;
-    this.mapSize = 1;
-    this.ReduceSize = 1;
+    this.requestDatasetSize = cfg.default.requestDatasetSize;
+
+    this.mapSize = cfg.default.mapSize;
+    this.reduceSize = cfg.default.reduceSize;
 
 
 
