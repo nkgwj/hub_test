@@ -10,7 +10,9 @@ $(function () {
     function () {
       Command.broadcast('program', {program:program, relay:'downward'});
       $('#btn-start').slideUp();
-
+      if(CONFIG.autoStart){
+        mapReduceConductor.run();
+      }
     }
   );
 
@@ -41,6 +43,13 @@ $(function () {
       mapReduceConductor.rise(size);
     }
   );
+
+  $('#btn-result').click(
+    function(){
+      var link = $("<a>").attr("href",intermediatesStore.objectURI()).html("[click]");
+      outputBox.message("Result:",link);
+    }
+  )
 });
 
 
