@@ -77,7 +77,8 @@ $(function () {
     readFile(datasetFile, function (fileName, fileContent) {
       outputBox.message(fileName, $('<pre>').html(fileContent));
       //dataset = JSON.parse(fileContent);
-      dataset = fileContent.replace(/\r\n/,"\n").split(/\n/);
+      //dataset = fileContent.replace(/[\r\n]*/,"\n").split(/\n/);
+      dataset = fileContent.split(/[\r\n]+/);
 
       dfdDatasetLoad.resolve();
     });

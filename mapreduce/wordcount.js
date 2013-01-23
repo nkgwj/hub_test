@@ -3,7 +3,7 @@ var WordCount = (function () {
   }
 
   WordCount.prototype.map = function (item, emit) {
-    var splitted = item.split(/\s+/g);
+    var splitted = item.split(/[\s\;\.\,\:\-\_]+/g);
     splitted.forEach(function (word) {
       emit(word, 1)
     })
@@ -38,7 +38,7 @@ var MapReduce = (function () {
         if (typeof (intermediates[key]) === "undefined") {
           intermediates[key] = [];
         }
-        intermediates[key].push(value)
+          intermediates[key].push(value)
       });
 
     });
