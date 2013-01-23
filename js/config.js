@@ -13,6 +13,7 @@ CONFIG = {
     mapSize:40,
     reduceSize:40,
     riseSize:40,
-    clockCycle:30
-  }
+    clockCycle:30,
+  },
+  autoStart:true
 };

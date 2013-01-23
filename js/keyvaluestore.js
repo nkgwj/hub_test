@@ -64,6 +64,29 @@ var KeyValueStore = (function () {
     return intermediates; // if(isAllReduced === false) return null
   };
 
+  KeyValueStore.prototype.objectURI = function(){
+    var iterator = this.iterator();
+    var key,value;
+    var fileContentLines = [];
+
+    try {
+      while (key = iterator.next()) {
+        value = this.repository.get(key);
+        fileContentLines.push(key+","+value[0]+"\n");
+      }
+
+
+    } catch (e) {
+      if(e instanceof StopIteration){
+        console.log("StopIteration:"+e);
+        var blob = new Blob(fileContentLines, {type:'text\/plain'});
+        return URL.createObjectURL(blob);
+      } else {
+        console.error("Unknown Error:"+e)
+      }
+    }
+
+  };
 
   KeyValueStore.prototype.size = function(){
     return this.repository.size;

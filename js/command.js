@@ -20,6 +20,10 @@ var Command = (function () {
 
       gridProject = new GridProject(myId);
       gridProject.setup(program,datasetStore,intermediatesStore);
+
+      if(CONFIG.autoStart){
+        mapReduceConductor.run();
+      }
       //gridProject.createNodes();
       $('#controller').slideDown();
 

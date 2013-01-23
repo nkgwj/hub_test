@@ -5,7 +5,9 @@ var WordCount = (function () {
   WordCount.prototype.map = function (item, emit) {
     var splitted = item.split(/\W+/g);
     splitted.forEach(function (word) {
-      emit(word, 1)
+      if(word !==""){
+        emit(word, 1);
+      }
     })
   };
 
@@ -23,7 +25,6 @@ var WordCount = (function () {
 })();
 
 var mapReduceTask = new WordCount();
-
 
 var MapReduce = (function () {
   function MapReduce(task) {
