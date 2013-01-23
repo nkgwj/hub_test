@@ -98,7 +98,8 @@ var Command = (function () {
   Command.prototype.intermediates = function (sender, json) {
     if (json.intermediates) {
       outputBox.message(sender.id, 'send a intermediates (size=' + String(json.size) + ')');
-      intermediatesStore.store(json.intermediates);
+      //intermediatesStore.store(json.intermediates);
+      mapReduceConductor.storeIntermediates(json.intermediates);
     } else {
       outputBox.log('invalid intermediates');
     }

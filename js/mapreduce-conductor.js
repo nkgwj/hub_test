@@ -38,6 +38,7 @@ var MapReduceConductor = (function () {
 
     this.mapSize = cfg.default.mapSize;
     this.reduceSize = cfg.default.reduceSize;
+    this.riseSize = cfg.default.riseSize;
 
     this.isRunning = false;
     this.timerId;
@@ -71,18 +72,23 @@ var MapReduceConductor = (function () {
     }
   };
 
+  MapReduceConductor.prototype.storeIntermediates = function(_intermediates){
+    //this.agent.intermediatesStore.isAllReduced = false;
+    this.agent.intermediatesStore.store(_intermediates);
+  };
+
   MapReduceConductor.prototype.processMessage = function (workerName,json) {
     if(typeof json !== 'object'){
       console.log(json);
     }
-
 
     outputBox.log(JSON.stringify(json));
 
     if (json.command === 'intermediates') {
       if (json.intermediates) {
         outputBox.message(workerName, 'send a intermediates (size=' + String(Object.keys(json.intermediates).length) + ')');
-        that.agent.intermediatesStore.store(json.intermediates);
+        this.storeIntermediates(json.intermediates);
+        //that.agent.intermediatesStore.store(json.intermediates);
       } else {
         outputBox.log('invalid intermediates');
       }
@@ -110,7 +116,9 @@ var MapReduceConductor = (function () {
 
   MapReduceConductor.prototype.action = function(){
 
-    if(!this.isRequestWaiting && !isParentRunoutDataset){ //TODO; use this.isParentRunoutDataset
+//TODO  use this.isParentRunoutDataset
+
+    if(!this.isRequestWaiting && !isParentRunoutDataset){
       if(this.agent.datasetStore.size() < this.requestThreshold){
         console.log('c:request_dataset');
         this.isRequestWaiting = true;
@@ -126,13 +134,20 @@ var MapReduceConductor = (function () {
       }
     }
 
-
-/*
-    if(!isReduceProcessing){
-      this.isReduceProcessing = true;
+    if(!this.isReduceProcessing){
+      if(this.agent.intermediatesStore.size() >= this.incrementalReduceThreshold &&
+        !this.agent.intermediatesStore.isAllReduced){
+        this.isReduceProcessing = true;
+        this.reduce(this.reduceSize);
+      } else if(isParentRunoutDataset &&
+        this.agent.intermediatesStore.size() > 0){
+        if(!isRoot()){
+          this.rise(this.riseSize);
+        }
+      }
     }
-*/
   };
+
 
   MapReduceConductor.prototype.run = function(){
     this.isRunning = true;

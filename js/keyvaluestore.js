@@ -24,7 +24,7 @@ var KeyValueStore = (function () {
       var list = that.repository.get(key) || [];
       list = list.concat(value);
       that.repository.set(key, list);
-      //this.isAllReduced = false;
+      that.isAllReduced = false;
     });
 
     return this.repository;
