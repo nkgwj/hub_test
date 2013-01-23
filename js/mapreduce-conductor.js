@@ -73,7 +73,6 @@ var MapReduceConductor = (function () {
   };
 
   MapReduceConductor.prototype.storeIntermediates = function(_intermediates){
-    //this.agent.intermediatesStore.isAllReduced = false;
     this.agent.intermediatesStore.store(_intermediates);
   };
 
@@ -88,7 +87,6 @@ var MapReduceConductor = (function () {
       if (json.intermediates) {
         outputBox.message(workerName, 'send a intermediates (size=' + String(Object.keys(json.intermediates).length) + ')');
         this.storeIntermediates(json.intermediates);
-        //that.agent.intermediatesStore.store(json.intermediates);
       } else {
         outputBox.log('invalid intermediates');
       }

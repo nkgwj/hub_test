@@ -17,22 +17,6 @@ var MapReduceWorker = (function () {
 
     this.mapWorker = new Worker(mapObjectURL);
     this.reduceWorker = new Worker(reduceObjectURL);
-    /*
-    this.mapWorker.onmessage = this.reduceWorker.onmessage = function (evt) {
-      var json = evt.data;
-      outputBox.log(JSON.stringify(json));
-
-      if (json.command === 'intermediates') {
-        if (json.intermediates) {
-          outputBox.message('worker', 'send a intermediates (size=' + String(json.intermediates.length) + ')');
-          intermediatesStore.store(json.intermediates);
-        } else {
-          outputBox.log('invalid intermediates');
-        }
-      } else {
-        outputBox.log('Invalid commands(worker)');
-      }
-    };*/
   }
 
   MapReduceWorker.prototype.map = function (subsetDataset) {

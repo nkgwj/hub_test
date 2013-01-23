@@ -15,9 +15,6 @@ var GridProject = (function () {
     mapReduceWorker = new MapReduceWorker(_program);
     mapReduceAgent = new MapReduceAgent(mapReduceWorker, _datasetStore, _intermediatesStore);
     mapReduceConductor = new MapReduceConductor(mapReduceAgent, parentId,CONFIG);
-/*    if(CONFIG.autoStart){
-      mapReduceConductor.run();
-    }*/
 
   };
 

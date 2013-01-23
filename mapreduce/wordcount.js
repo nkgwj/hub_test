@@ -50,8 +50,6 @@ var MapReduce = (function () {
               value:value,
               item:item
           }));
-
-          //self.postMessage(intermediates);
         }
 
       });
