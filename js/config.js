@@ -9,8 +9,9 @@ CONFIG = {
   default:{
     requestThreshold:1,
     incrementalReduceThreshold:1,
-    requestDatasetSize:1,
-    mapSize:1,
-    reduceSize:1
+    requestDatasetSize:200,
+    mapSize:40,
+    reduceSize:100,
+    clockCycle:30
   }
 };

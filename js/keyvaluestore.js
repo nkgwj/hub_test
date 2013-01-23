@@ -24,28 +24,38 @@ var KeyValueStore = (function () {
       var list = that.repository.get(key) || [];
       list = list.concat(value);
       that.repository.set(key, list);
+      //this.isAllReduced = false;
     });
 
     return this.repository;
   };
 
-  KeyValueStore.prototype.withdraw = function (size, isSkipReduced) {
+  KeyValueStore.prototype.withdraw = function (requestSize, isSkipReduced) {
     var isAllReduced = true;
     var iterator = this.iterator();
+    var size = 0;
 
     var intermediates = {};
-    for (var i = 0; i < size && i < this.repository.size; i++) {
-      var key = iterator.next();
-      var value = this.repository.get(key);
-      var isAlreadyReduced = (value.length === 1);
+    try {
+      for (var i = 0; size < requestSize; i++) {
+        //for (var i = 0; size < requestSize && i < this.repository.size; i++) {
+        var key = iterator.next();
+        var value = this.repository.get(key);
+        var isAlreadyReduced = (value.length === 1);
 
-      isAllReduced &= isAlreadyReduced;
+        isAllReduced &= isAlreadyReduced;
 
-      if (isAlreadyReduced && isSkipReduced) {
-        size++;
+        if (!isAlreadyReduced || !isSkipReduced) {
+          this.repository.delete(key);
+          intermediates[key] = value;
+          size++;
+        }
+      }
+    } catch (e) {
+      if(e instanceof StopIteration){
+        console.log("StopIteration:"+e);
       } else {
-        this.repository.delete(key);
-        intermediates[key] = value;
+        console.error("Unknown Error:"+e)
       }
     }
 

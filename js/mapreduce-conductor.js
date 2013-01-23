@@ -34,10 +34,13 @@ var MapReduceConductor = (function () {
 
     this.requestDatasetSize = cfg.default.requestDatasetSize;
 
+    this.clockCycle = cfg.default.clockCycle;
+
     this.mapSize = cfg.default.mapSize;
     this.reduceSize = cfg.default.reduceSize;
 
-
+    this.isRunning = false;
+    this.timerId;
 
   }
 
@@ -69,6 +72,11 @@ var MapReduceConductor = (function () {
   };
 
   MapReduceConductor.prototype.processMessage = function (workerName,json) {
+    if(typeof json !== 'object'){
+      console.log(json);
+    }
+
+
     outputBox.log(JSON.stringify(json));
 
     if (json.command === 'intermediates') {
@@ -102,7 +110,7 @@ var MapReduceConductor = (function () {
 
   MapReduceConductor.prototype.action = function(){
 
-    if(!this.isRequestWaiting){
+    if(!this.isRequestWaiting && !isParentRunoutDataset){ //TODO; use this.isParentRunoutDataset
       if(this.agent.datasetStore.size() < this.requestThreshold){
         console.log('c:request_dataset');
         this.isRequestWaiting = true;
@@ -117,11 +125,27 @@ var MapReduceConductor = (function () {
         this.map(this.mapSize);
       }
     }
+
+
 /*
     if(!isReduceProcessing){
       this.isReduceProcessing = true;
     }
 */
+  };
+
+  MapReduceConductor.prototype.run = function(){
+    this.isRunning = true;
+    this.timerId = setInterval(this.onClock.bind(this),this.clockCycle);
+  };
+
+  MapReduceConductor.prototype.stop = function(){
+    clearInterval(this.timerId);
+    this.isRunning = false;
+  };
+
+  MapReduceConductor.prototype.onClock = function(){
+    this.action();
   };
 
   return MapReduceConductor;

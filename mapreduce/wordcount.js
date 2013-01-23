@@ -38,7 +38,21 @@ var MapReduce = (function () {
         if (typeof (intermediates[key]) === "undefined") {
           intermediates[key] = [];
         }
+
+        try{
           intermediates[key].push(value)
+        } catch(e) {
+          self.postMessage(JSON.stringify({
+            command:"error",
+            error:e,
+              key:key,
+              value:value,
+              item:item
+          }));
+
+          //self.postMessage(intermediates);
+        }
+
       });
 
     });
