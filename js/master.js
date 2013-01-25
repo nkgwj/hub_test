@@ -76,7 +76,7 @@ $(function () {
 
       program = fileContent;
 
-      var result = /^(\w[\w\-]*)\.(js|ts)$/.exec(fileName);
+      var result = /^(\w[\w\-]*)\.(js|ts|coffee)$/.exec(fileName);
       if(result){
         if(result[2] === 'ts'){
           var dfdLibLoad = $.get("js/lib/tsc/lib.d.ts",null,null,"text");
@@ -92,7 +92,8 @@ $(function () {
           });
 
         } else if (result[2] === 'coffee') {
-          console.error("not supported");
+          program = CoffeeScript.compile(program,{bare:true});
+          dfdCompiled.resolve();
         } else if (result[2] === 'js') {
           dfdCompiled.resolve();
         }
