@@ -46,7 +46,10 @@ $(function () {
 
   $('#btn-result').click(
     function(){
-      var link = $("<a>").attr("href",intermediatesStore.objectURI()).html("[click]");
+      var link = $("<a>").attr({
+        "href":intermediatesStore.objectURI(),
+        "download":'result.csv'
+      }).html("[click]");
       outputBox.message("Result:",link);
     }
   )

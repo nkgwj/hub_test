@@ -71,8 +71,24 @@ $(function () {
     readFile(programFile, function (fileName, fileContent) {
       outputBox.message(fileName, $('<pre>').html(fileContent));
       program = fileContent;
-      dfdProgramLoad.resolve();
-    });
+
+      if(CONFIG.loadMapReduceLibrary){
+        var result = /^(\w[\w\-]*)\.(js|ts)$/.exec(fileName);
+        if(result){
+          var bindScript = 'var mapReduce = new MapReduce(new ' + result[1] + '());\n';
+          $.get(CONFIG.loadMapReduceLibrary,null,null,"text").done(function(script){
+            program = [program,script,bindScript].join("\n");
+            outputBox.message(fileName+"(with MapReduce Library)", $('<pre>').html(program));
+            dfdProgramLoad.resolve();
+          });
+        } else {
+          console.error("Failed to parse filename.")
+        }
+      }else {
+        outputBox.message(fileName, $('<pre>').html(program));
+        dfdProgramLoad.resolve();
+      }
+   });
 
     readFile(datasetFile, function (fileName, fileContent) {
       outputBox.message(fileName, $('<pre>').html(fileContent));
