@@ -9,7 +9,7 @@ CONFIG = {
   default:{
     requestThreshold:1,
     incrementalReduceThreshold:200,
-    requestDatasetSize:200,
+    requestDatasetSize:50,
     mapSize:40,
     reduceSize:40,
     riseSize:40,
@@ -17,5 +17,5 @@ CONFIG = {
   },
   autoStart:true,
   loadMapReduceLibrary:"mapreduce/mapreduce.js",
-  verbose:false
+  verbose:true
 };

@@ -79,6 +79,17 @@ function isRoot() {
   return parentId === 0;
 }
 
+var isAllChildrenCompleted = function () {
+
+  return childrenIds.map(function (id) {
+    return connections[id].completed;
+  }).reduce(function (a, b) {
+      return a && b;
+    });
+
+};
+
+
 function checkFeature() {
   if (!navigator.mozGetUserMedia) {
     outputBox.log('getUserMedia not supported.');

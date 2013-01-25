@@ -125,7 +125,7 @@ var MapReduceConductor = (function () {
 
 //TODO  use this.isParentRunoutDataset
 
-    if(!this.isRequestWaiting && !isParentRunoutDataset){
+    if(!(this.isRequestWaiting || isParentRunoutDataset || isRoot())){
       if(this.agent.datasetStore.size() < this.requestThreshold){
         if(CONFIG.verbose){
           console.log('c:request_dataset');
@@ -154,6 +154,25 @@ var MapReduceConductor = (function () {
         this.agent.intermediatesStore.size() > 0){
         if(!isRoot()){
           this.rise(this.riseSize);
+        }
+      } else if (this.agent.intermediatesStore.isAllReduced){
+
+        if (isRoot()) {
+          if (isAllChildrenCompleted() &&
+            this.agent.datasetStore.size() == 0) {
+
+            outputBox.message("All", "Completed");
+            this.stop();
+          }
+        } else if(this.agent.intermediatesStore.size() === 0){
+          if (isLeaf() || isAllChildrenCompleted()) {
+            if (isParentRunoutDataset &&
+              this.agent.datasetStore.size() == 0) {
+              Command.sendto(parentId).command('completed');
+              outputBox.message("Subtree", "Completed");
+              this.stop();
+            }
+          }
         }
       }
     }

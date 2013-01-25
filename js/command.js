@@ -16,7 +16,6 @@ var Command = (function () {
     if (json.program) {
       outputBox.message(sender.id, 'send a program (size=' + String(json.program.length) + ')');
       program = json.program;
-      console.log(json.program);
 
       gridProject = new GridProject(myId);
       gridProject.setup(program,datasetStore,intermediatesStore);
@@ -58,20 +57,12 @@ var Command = (function () {
 
   Command.prototype.completed = function (sender, json) {
     connections[sender.id].completed = true;
+    console.log(json);
 
-    var isAllChildrenCompleted = function () {
 
-      return childrenIds.map(function (id) {
-        return connections[id].completed;
-      }).reduce(function (a, b) {
-          return a && b;
-        });
-
-    };
-
-    if (isAllChildrenCompleted()) {
-      Command.sendto(parentId).command('completed');
-    }
+    //if (isAllChildrenCompleted()) {
+    // Command.sendto(parentId).command('completed');
+   // }
   };
 
   Command.prototype.request_dataset = function (sender, json) {
