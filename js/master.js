@@ -66,27 +66,58 @@ $(function () {
     var dfdProgramLoad = $.Deferred();
     var dfdDatasetLoad = $.Deferred();
 
+    var dfdCompiled = $.Deferred();
+    var dfdLinked = $.Deferred();
+
     $.when(dfdProgramLoad, dfdDatasetLoad).done(startUp);
 
+
     readFile(programFile, function (fileName, fileContent) {
-      outputBox.message(fileName, $('<pre>').html(fileContent));
+
       program = fileContent;
 
-      if(CONFIG.loadMapReduceLibrary){
-        var result = /^(\w[\w\-]*)\.(js|ts)$/.exec(fileName);
-        if(result){
-          var bindScript = 'var mapReduce = new MapReduce(new ' + result[1] + '());\n';
-          $.get(CONFIG.loadMapReduceLibrary,null,null,"text").done(function(script){
-            program = [program,script,bindScript].join("\n");
-            outputBox.message(fileName+"(with MapReduce Library)", $('<pre>').html(program));
-            dfdProgramLoad.resolve();
+      var result = /^(\w[\w\-]*)\.(js|ts)$/.exec(fileName);
+      if(result){
+        if(result[2] === 'ts'){
+          var dfdLibLoad = $.get("js/lib/tsc/lib.d.ts",null,null,"text");
+          dfdLibLoad.done(function(libfile){
+            program = TypeScriptCompiler.compile([{
+              fileName:"lib.d.ts",
+              source:libfile
+            },{
+              fileName:"",
+              source:program
+            }]);
+            dfdCompiled.resolve();
           });
-        } else {
-          console.error("Failed to parse filename.")
+
+        } else if (result[2] === 'coffee') {
+          console.error("not supported");
+        } else if (result[2] === 'js') {
+          dfdCompiled.resolve();
         }
-      }else {
-        outputBox.message(fileName, $('<pre>').html(program));
-        dfdProgramLoad.resolve();
+
+        dfdCompiled.then(function () {
+          if (CONFIG.loadMapReduceLibrary) {
+            var bindScript = 'var mapReduce = new MapReduce(new ' + result[1] + '());\n';
+            var dfdMapReduceLoad = $.get(CONFIG.loadMapReduceLibrary, null, null, "text");
+            dfdMapReduceLoad.done(function (script) {
+              program = [program, script, bindScript].join("\n");
+              dfdLinked.resolve(fileName + "(with MapReduce Library)",program);
+            });
+          } else {
+            dfdLinked.resolve(fileName,program);
+          }
+
+        });
+
+        dfdLinked.then(function (title,source) {
+          outputBox.message(title, $('<pre>').html(source));
+          dfdProgramLoad.resolve();
+        });
+
+      } else {
+        console.error("Failed to parse filename.");
       }
    });
 

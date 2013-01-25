@@ -78,4 +78,3 @@ self.onmessage = function (event) {
   }
 };
 
-var mapReduce = new MapReduce(new WordCount());
