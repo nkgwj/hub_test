@@ -1,0 +1,5 @@
+/* Third Party Notices
+TypeScript compile support is provided by TypeScript node package,
+ which is open source software, copyright by Microsoft
+ The original software is available from
+   http://typescript.codeplex.com/
