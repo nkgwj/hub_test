@@ -16,5 +16,6 @@ CONFIG = {
     clockCycle:30
   },
   autoStart:true,
-  loadMapReduceLibrary:"mapreduce/mapreduce.js"
+  loadMapReduceLibrary:"mapreduce/mapreduce.js",
+  verbose:false
 };

@@ -9,9 +9,14 @@
 var OutputBox = (function () {
   function OutputBox(selector) {
     this.jqueryObject = $(selector);
+    this.enabled = true;
   }
 
   OutputBox.prototype.message = function (subject, body) {
+    if(!this.enabled) {
+      return;
+    }
+
     $(this.jqueryObject).prepend($('<p>').addClass('message').append(
       $('<span>').addClass('message-subject').html(subject)
     ).append(
@@ -20,6 +25,10 @@ var OutputBox = (function () {
   };
 
   OutputBox.prototype.log = function (msg) {
+    if(!this.enabled) {
+      return;
+    }
+
     $(this.jqueryObject).prepend($('<p>').addClass('system-log').html(Array.apply(null, arguments).join('')));
   };
 

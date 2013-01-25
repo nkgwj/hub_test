@@ -20,7 +20,9 @@ var KeyValueStore = (function () {
 
     Object.keys(keyValueTable).forEach(function (key) {
       var value = keyValueTable[key];
-      console.log(key, value);
+      if(CONFIG.verbose) {
+        console.log(key, value);
+      }
       var list = that.repository.get(key) || [];
       list = list.concat(value);
       that.repository.set(key, list);

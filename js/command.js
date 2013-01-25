@@ -83,7 +83,7 @@ var Command = (function () {
 
   Command.prototype.dataset = function (sender, json) {
     if (json.dataset) {
-      outputBox.message(sender.id, 'send a dataset (size=' + String(json.dataset.length) + ')');
+      verboseOut.message(sender.id, 'send a dataset (size=' + String(json.dataset.length) + ')');
       mapReduceConductor.onDataset(json.dataset);
     } else {
       outputBox.log('invalid dataset');
@@ -101,7 +101,7 @@ var Command = (function () {
 
   Command.prototype.intermediates = function (sender, json) {
     if (json.intermediates) {
-      outputBox.message(sender.id, 'send a intermediates (size=' + String(json.size) + ')');
+      verboseOut.message(sender.id, 'send a intermediates (size=' + String(json.size) + ')');
       //intermediatesStore.store(json.intermediates);
       mapReduceConductor.storeIntermediates(json.intermediates);
     } else {
@@ -145,7 +145,7 @@ var Command = (function () {
 
   Command.dispatch = function (cmd, senderId, json) {
     if (_command[cmd]) {
-      outputBox.log(cmd);
+     // outputBox.log(cmd);
       var sender = Command.sendto(senderId);
       _command[cmd](sender, json);
 

@@ -77,8 +77,8 @@ function setupDataChannel(channel, localPC, remotePC) {
       return;
     }
 
-    outputBox.log('message from', remotePC, ' length=', data.length);
-    outputBox.message(remotePC, data);
+    verboseOut.log('message from', remotePC, ' length=', data.length);
+    verboseOut.message(remotePC, data);
 
     var json = JSON.parse(data);
     if (typeof json === 'object' && json.command) {

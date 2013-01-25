@@ -46,6 +46,7 @@ var myId, parentId;
 var childrenIds = [];
 
 var outputBox;
+var verboseOut;
 
 function listen(myId) {
   $('#myId').html(myId);
@@ -107,4 +108,6 @@ function validateProjectName(projectName) {
 
 $(function () {
   outputBox = new OutputBox("#log");
+  verboseOut = new OutputBox("#log");
+  verboseOut.enabled = Boolean(CONFIG.verbose);
 });

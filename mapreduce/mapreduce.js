@@ -16,7 +16,8 @@ var MapReduce = (function () {
     var intermediates = {};
     input.forEach(function (item) {
       that.task.map(item, function (key, value) {
-        if (typeof (intermediates[key]) === "undefined") {
+        if (!intermediates.hasOwnProperty(key) ||
+          (intermediates[key]) === "undefined") {
           intermediates[key] = [];
         }
 
@@ -67,7 +68,6 @@ self.onmessage = function (event) {
       case "reduce":
         if (msg.intermediates) {
           self.postMessage({
-
             command:"intermediates",
             intermediates:mapReduce.reduce(msg.intermediates)
           });
@@ -77,4 +77,3 @@ self.onmessage = function (event) {
     }
   }
 };
-

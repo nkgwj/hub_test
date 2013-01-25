@@ -28,7 +28,8 @@ var MapReduceConductor = (function () {
     this.isRequestWaiting = false;
     this.agent.worker.mapWorker.onmessage = this.onMapMessage.bind(this);
     this.agent.worker.reduceWorker.onmessage = this.onReduceMessage.bind(this);
-
+    this.agent.worker.mapWorker.onerror = this.onError.bind(this,'map');
+    this.agent.worker.reduceWorker.onerror = this.onError.bind(this,'reduce');
     this.requestThreshold = cfg.default.requestThreshold;
     this.incrementalReduceThreshold = cfg.default.incrementalReduceThreshold;
 
@@ -77,21 +78,22 @@ var MapReduceConductor = (function () {
   };
 
   MapReduceConductor.prototype.processMessage = function (workerName,json) {
-    if(typeof json !== 'object'){
+    if(typeof json !== 'object' && CONFIG.verbose){
       console.log(json);
     }
 
-    outputBox.log(JSON.stringify(json));
+    verboseOut.log(JSON.stringify(json));
 
     if (json.command === 'intermediates') {
       if (json.intermediates) {
-        outputBox.message(workerName, 'send a intermediates (size=' + String(Object.keys(json.intermediates).length) + ')');
+        verboseOut.message(workerName, 'send a intermediates (size=' + String(Object.keys(json.intermediates).length) + ')');
         this.storeIntermediates(json.intermediates);
       } else {
         outputBox.log('invalid intermediates');
       }
     } else {
       outputBox.log('Invalid commands(' + workerName + ')');
+      console.log(json);
     }
   };
 
@@ -109,7 +111,14 @@ var MapReduceConductor = (function () {
     this.isRequestWaiting = false;
 
     this.agent.datasetStore.store(_dataset);
-    console.log(_dataset);
+
+    if(CONFIG.verbose) {
+      console.log(_dataset);
+    }
+  };
+
+  MapReduceConductor.prototype.onError = function(workerType,error){
+    console.log(workerType,error);
   };
 
   MapReduceConductor.prototype.action = function(){
@@ -118,7 +127,9 @@ var MapReduceConductor = (function () {
 
     if(!this.isRequestWaiting && !isParentRunoutDataset){
       if(this.agent.datasetStore.size() < this.requestThreshold){
-        console.log('c:request_dataset');
+        if(CONFIG.verbose){
+          console.log('c:request_dataset');
+        }
         this.isRequestWaiting = true;
         this.dataset(this.requestDatasetSize);
       }
@@ -126,7 +137,9 @@ var MapReduceConductor = (function () {
 
     if(!this.isMapProcessing){
       if(this.agent.datasetStore.size() >= 1){
-        console.log('c:map');
+        if(CONFIG.verbose){
+          console.log('c:map');
+        }
         this.isMapProcessing = true;
         this.map(this.mapSize);
       }
