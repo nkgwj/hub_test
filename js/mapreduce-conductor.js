@@ -55,6 +55,15 @@ var MapReduceConductor = (function () {
 
   }
 
+  MapReduceConductor.prototype.dataset = function (size) {
+    if (!isRoot()) {
+      this.isRequestWaiting = true;
+      this.parentNode().command('request_dataset', {size:size});
+    } else {
+      console.error("cannot request dataset at root node");
+    }
+  };
+
   MapReduceConductor.prototype.map = function (size) {
     this.isMapProcessing = true;
     this.agent.map(size);
@@ -71,14 +80,6 @@ var MapReduceConductor = (function () {
       this.parentNode().command('intermediates', {intermediates:subset});
     } else {
       console.error("cannot rise at root node");
-    }
-  };
-
-  MapReduceConductor.prototype.dataset = function (size) {
-    if (!isRoot()) {
-      this.parentNode().command('request_dataset', {size:size});
-    } else {
-      console.error("cannot request dataset at root node");
     }
   };
 
@@ -139,49 +140,48 @@ var MapReduceConductor = (function () {
         if(CONFIG.verbose){
           console.log('c:request_dataset');
         }
-        this.isRequestWaiting = true;
+
         this.dataset(this.requestDatasetSize);
       }
     }
 
     if(!this.isMapProcessing){
-      if(_dataset.size() >= 1){
+      if(!_dataset.isEmpty()){
         if(CONFIG.verbose){
           console.log('c:map');
         }
-        this.isMapProcessing = true;
         this.map(this.mapSize);
       }
     }
 
     if(!this.isReduceProcessing){
+
+      var isChildrenRunoutIntermediates = isLeaf() || isAllChildrenCompleted();
+
       if(_intermediates.size() >= this.incrementalReduceThreshold &&
-        !_intermediates.isAllReduced){
-        this.isReduceProcessing = true;
+        !_intermediates.isAllReduced){ // add Condition
+
         this.reduce(this.reduceSize);
-      } else if(isParentRunoutDataset &&
-        _intermediates.size() > 0){
+
+      } else if(isParentRunoutDataset && !_intermediates.isEmpty()){
+
         if(!isRoot()){
           this.rise(this.riseSize);
         }
-      } else if (_intermediates.isAllReduced){
 
-        if (isRoot()) {
-          if (isAllChildrenCompleted() &&
-            _dataset.size() == 0) {
+      } else if (isChildrenRunoutIntermediates && _dataset.isEmpty()){
 
-            outputBox.message("All", "Completed");
-            this.stop();
-          }
-        } else if(_intermediates.size() === 0){
-          if (isLeaf() || isAllChildrenCompleted()) {
-            if (isParentRunoutDataset &&
-              _dataset.size() == 0) {
-              Command.sendto(parentId).command('completed');
-              outputBox.message("Subtree", "Completed");
-              this.stop();
-            }
-          }
+        if(isRoot() && _intermediates.isAllReduced) {
+
+          outputBox.message("All", "Completed");
+          this.stop();
+
+        } else if(!isRoot() && _intermediates.isEmpty() && isParentRunoutDataset){
+
+          Command.sendto(parentId).command('completed');
+          outputBox.message("Subtree", "Completed");
+          this.stop();
+
         }
       }
     }
