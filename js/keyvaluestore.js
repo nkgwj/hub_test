@@ -93,5 +93,10 @@ var KeyValueStore = (function () {
   KeyValueStore.prototype.size = function(){
     return this.repository.size;
   };
+
+  KeyValueStore.prototype.isEmpty = function(){
+    return this.repository.size === 0;
+  };
+
   return KeyValueStore;
 })();

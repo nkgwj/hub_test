@@ -9,6 +9,12 @@
 var MapReduceConductor = (function () {
   var parentNode;
   var that;
+
+  //Alias for long Signature
+  var _intermediates;
+  var _dataset;
+
+
   function MapReduceConductor(mapReduceAgent, parentId,cfg) {
     that = this;
     this.agent = mapReduceAgent;
@@ -44,6 +50,9 @@ var MapReduceConductor = (function () {
     this.isRunning = false;
     this.timerId;
 
+    _intermediates = this.agent.intermediatesStore;
+    _dataset = this.agent.datasetStore;
+
   }
 
   MapReduceConductor.prototype.map = function (size) {
@@ -58,7 +67,7 @@ var MapReduceConductor = (function () {
 
   MapReduceConductor.prototype.rise = function (size) {
     if (!isRoot()) {
-      var subset = that.agent.intermediatesStore.withdraw(size);
+      var subset = _intermediates.withdraw(size);
       this.parentNode().command('intermediates', {intermediates:subset});
     } else {
       console.error("cannot rise at root node");
@@ -73,8 +82,8 @@ var MapReduceConductor = (function () {
     }
   };
 
-  MapReduceConductor.prototype.storeIntermediates = function(_intermediates){
-    this.agent.intermediatesStore.store(_intermediates);
+  MapReduceConductor.prototype.storeIntermediates = function(newIntermediates){
+    _intermediates.store(newIntermediates);
   };
 
   MapReduceConductor.prototype.processMessage = function (workerName,json) {
@@ -107,13 +116,13 @@ var MapReduceConductor = (function () {
     this.processMessage( 'ReduceWorker', evt.data);
   };
 
-  MapReduceConductor.prototype.onDataset = function(_dataset){
+  MapReduceConductor.prototype.onDataset = function(newDataset){
     this.isRequestWaiting = false;
 
-    this.agent.datasetStore.store(_dataset);
+    _dataset.store(newDataset);
 
     if(CONFIG.verbose) {
-      console.log(_dataset);
+      console.log(newDataset);
     }
   };
 
@@ -126,7 +135,7 @@ var MapReduceConductor = (function () {
 //TODO  use this.isParentRunoutDataset
 
     if(!(this.isRequestWaiting || isParentRunoutDataset || isRoot())){
-      if(this.agent.datasetStore.size() < this.requestThreshold){
+      if(_dataset.size() < this.requestThreshold){
         if(CONFIG.verbose){
           console.log('c:request_dataset');
         }
@@ -136,7 +145,7 @@ var MapReduceConductor = (function () {
     }
 
     if(!this.isMapProcessing){
-      if(this.agent.datasetStore.size() >= 1){
+      if(_dataset.size() >= 1){
         if(CONFIG.verbose){
           console.log('c:map');
         }
@@ -146,28 +155,28 @@ var MapReduceConductor = (function () {
     }
 
     if(!this.isReduceProcessing){
-      if(this.agent.intermediatesStore.size() >= this.incrementalReduceThreshold &&
-        !this.agent.intermediatesStore.isAllReduced){
+      if(_intermediates.size() >= this.incrementalReduceThreshold &&
+        !_intermediates.isAllReduced){
         this.isReduceProcessing = true;
         this.reduce(this.reduceSize);
       } else if(isParentRunoutDataset &&
-        this.agent.intermediatesStore.size() > 0){
+        _intermediates.size() > 0){
         if(!isRoot()){
           this.rise(this.riseSize);
         }
-      } else if (this.agent.intermediatesStore.isAllReduced){
+      } else if (_intermediates.isAllReduced){
 
         if (isRoot()) {
           if (isAllChildrenCompleted() &&
-            this.agent.datasetStore.size() == 0) {
+            _dataset.size() == 0) {
 
             outputBox.message("All", "Completed");
             this.stop();
           }
-        } else if(this.agent.intermediatesStore.size() === 0){
+        } else if(_intermediates.size() === 0){
           if (isLeaf() || isAllChildrenCompleted()) {
             if (isParentRunoutDataset &&
-              this.agent.datasetStore.size() == 0) {
+              _dataset.size() == 0) {
               Command.sendto(parentId).command('completed');
               outputBox.message("Subtree", "Completed");
               this.stop();
