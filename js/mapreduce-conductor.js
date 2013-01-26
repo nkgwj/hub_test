@@ -156,20 +156,26 @@ var MapReduceConductor = (function () {
 
     if(!this.isReduceProcessing){
 
-      var isChildrenRunoutIntermediates = isLeaf() || isAllChildrenCompleted();
 
       if(_intermediates.size() >= this.incrementalReduceThreshold &&
-        !_intermediates.isAllReduced){ // add Condition
+        !_intermediates.isAllReduced){
 
         this.reduce(this.reduceSize);
 
-      } else if(isParentRunoutDataset && !_intermediates.isEmpty()){
+      } else if(!_intermediates.isEmpty()){
 
-        if(!isRoot()){
+        if(isRoot()){
+          if(!_intermediates.isAllReduced){
+            this.reduce(this.reduceSize)
+          }
+        } else if(isParentRunoutDataset){
           this.rise(this.riseSize);
         }
+      }
 
-      } else if (isChildrenRunoutIntermediates && _dataset.isEmpty()){
+      var isChildrenRunoutIntermediates = isLeaf() || isAllChildrenCompleted();
+
+      if (isChildrenRunoutIntermediates && _dataset.isEmpty()){
 
         if(isRoot() && _intermediates.isAllReduced) {
 
@@ -204,3 +210,20 @@ var MapReduceConductor = (function () {
 
   return MapReduceConductor;
 })();
+
+
+/*
+
+  else if(!_intermediates.isEmpty()){
+    if(isRoot()){
+      if(!_intermediates.isAllReduced){ // add Condition
+        this.reduce(this.reduceSize)
+      }
+    } else if(isParentRunoutDataset){
+        this.rise(this.riseSize);
+    }
+  }
+
+
+
+*/
