@@ -24,7 +24,7 @@ $(function () {
     datasetStore.store(dataset);
 
     var gridProject = new GridProject(myId);
-    gridProject.setup(program,datasetStore,intermediatesStore);
+    gridProject.setup(program, datasetStore, intermediatesStore);
 
     $("#btn-start").slideDown();
 
@@ -40,6 +40,33 @@ $(function () {
     };
 
     return reader;
+  };
+
+  fileTypeMap = {
+    "js":"text/javascript",
+    "coffee":"text/coffeescript",
+    "ts":"text/typescript"
+  };
+
+  var parseFilename = function (fileName) {
+    var regexpParseFilename = /^(\w[\w\-]*)\.(\w*)$/
+
+    var result = regexpParseFilename.exec(fileName);
+    if (!result) {
+      return null;
+    }
+
+    var fileType = fileTypeMap[result[2]];
+    if (!fileType) {
+      return null;
+    }
+
+    return {
+      fileName:result[0],
+      className:result[1],
+      extension:result[2],
+      fileType:fileType
+    }
   };
 
   var setUp = function () {
@@ -71,56 +98,41 @@ $(function () {
 
     $.when(dfdProgramLoad, dfdDatasetLoad).done(startUp);
 
-
     readFile(programFile, function (fileName, fileContent) {
+      var result = parseFilename(fileName);
+      if (!result) {
+        console.error("Failed to parse filename.");
+        return;
+      }
 
-      program = fileContent;
+      var compiler = new Compiler(result.fileType);
+      if (compiler.executable) {
+        compiler.compile(fileContent, dfdCompiled);
+      } else {
+        console.error("Error(file reader):compiler for file type(" + result.fileType + ") is not registered")
+      }
 
-      var result = /^(\w[\w\-]*)\.(js|ts|coffee)$/.exec(fileName);
-      if(result){
-        if(result[2] === 'ts'){
-          var dfdLibLoad = $.get("js/lib/tsc/lib.d.ts",null,null,"text");
-          dfdLibLoad.done(function(libfile){
-            program = TypeScriptCompiler.compile([{
-              fileName:"lib.d.ts",
-              source:libfile
-            },{
-              fileName:"",
-              source:program
-            }]);
-            dfdCompiled.resolve();
+      dfdCompiled.then(function (_program) {
+        if (CONFIG.loadMapReduceLibrary) {
+          var bindScript = 'var mapReduce = new MapReduce(new ' + result.className + '());\n';
+          var dfdMapReduceLoad = $.get(CONFIG.loadMapReduceLibrary, null, null, "text");
+          dfdMapReduceLoad.done(function (script) {
+            _program = [_program, script, bindScript].join("\n");
+            dfdLinked.resolve(fileName + "(with MapReduce Library)", _program);
           });
-
-        } else if (result[2] === 'coffee') {
-          program = CoffeeScript.compile(program,{bare:true});
-          dfdCompiled.resolve();
-        } else if (result[2] === 'js') {
-          dfdCompiled.resolve();
+        } else {
+          dfdLinked.resolve(fileName, _program);
         }
 
-        dfdCompiled.then(function () {
-          if (CONFIG.loadMapReduceLibrary) {
-            var bindScript = 'var mapReduce = new MapReduce(new ' + result[1] + '());\n';
-            var dfdMapReduceLoad = $.get(CONFIG.loadMapReduceLibrary, null, null, "text");
-            dfdMapReduceLoad.done(function (script) {
-              program = [program, script, bindScript].join("\n");
-              dfdLinked.resolve(fileName + "(with MapReduce Library)",program);
-            });
-          } else {
-            dfdLinked.resolve(fileName,program);
-          }
+      });
 
-        });
+      dfdLinked.then(function (title, source) {
+        program = source;
+        outputBox.message(title, $('<pre>').html(source));
+        dfdProgramLoad.resolve();
+      });
 
-        dfdLinked.then(function (title,source) {
-          outputBox.message(title, $('<pre>').html(source));
-          dfdProgramLoad.resolve();
-        });
-
-      } else {
-        console.error("Failed to parse filename.");
-      }
-   });
+    });
 
     readFile(datasetFile, function (fileName, fileContent) {
       outputBox.message(fileName, $('<pre>').html(fileContent));
@@ -134,3 +146,7 @@ $(function () {
   $('#setup').click(setUp);
 
 });
+
+
+
+
