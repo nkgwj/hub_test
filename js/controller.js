@@ -5,12 +5,13 @@
  * Time: 11:16
  * To change this template use File | Settings | File Templates.
  */
+
 $(function () {
   $('#btn-start').click(
     function () {
       Command.broadcast('program', {program:program, relay:'downward'});
       $('#btn-start').slideUp();
-      if(CONFIG.autoStart){
+      if (CONFIG.autoStart) {
         mapReduceConductor.run();
       }
     }
@@ -45,12 +46,12 @@ $(function () {
   );
 
   $('#btn-result').click(
-    function(){
+    function () {
       var link = $("<a>").attr({
         "href":intermediatesStore.objectURI(),
         "download":'result.csv'
       }).html("[click]");
-      outputBox.message("Result:",link);
+      outputBox.message("Result:", link);
     }
   )
 });

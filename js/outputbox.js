@@ -13,7 +13,7 @@ var OutputBox = (function () {
   }
 
   OutputBox.prototype.message = function (subject, body) {
-    if(!this.enabled) {
+    if (!this.enabled) {
       return;
     }
 
@@ -25,7 +25,7 @@ var OutputBox = (function () {
   };
 
   OutputBox.prototype.log = function (msg) {
-    if(!this.enabled) {
+    if (!this.enabled) {
       return;
     }
 

@@ -15,7 +15,7 @@ var MapReduceConductor = (function () {
   var _dataset;
 
 
-  function MapReduceConductor(mapReduceAgent, parentId,cfg) {
+  function MapReduceConductor(mapReduceAgent, parentId, cfg) {
     that = this;
     this.agent = mapReduceAgent;
     this.parentId = parentId;
@@ -34,8 +34,8 @@ var MapReduceConductor = (function () {
     this.isRequestWaiting = false;
     this.agent.worker.mapWorker.onmessage = this.onMapMessage.bind(this);
     this.agent.worker.reduceWorker.onmessage = this.onReduceMessage.bind(this);
-    this.agent.worker.mapWorker.onerror = this.onError.bind(this,'map');
-    this.agent.worker.reduceWorker.onerror = this.onError.bind(this,'reduce');
+    this.agent.worker.mapWorker.onerror = this.onError.bind(this, 'map');
+    this.agent.worker.reduceWorker.onerror = this.onError.bind(this, 'reduce');
     this.requestThreshold = cfg.default.requestThreshold;
     this.incrementalReduceThreshold = cfg.default.incrementalReduceThreshold;
 
@@ -49,6 +49,7 @@ var MapReduceConductor = (function () {
 
     this.isRunning = false;
     this.timerId;
+
 
     _intermediates = this.agent.intermediatesStore;
     _dataset = this.agent.datasetStore;
@@ -83,12 +84,12 @@ var MapReduceConductor = (function () {
     }
   };
 
-  MapReduceConductor.prototype.storeIntermediates = function(newIntermediates){
+  MapReduceConductor.prototype.storeIntermediates = function (newIntermediates) {
     _intermediates.store(newIntermediates);
   };
 
-  MapReduceConductor.prototype.processMessage = function (workerName,json) {
-    if(typeof json !== 'object' && CONFIG.verbose){
+  MapReduceConductor.prototype.processMessage = function (workerName, json) {
+    if (typeof json !== 'object' && CONFIG.verbose) {
       console.log(json);
     }
 
@@ -114,30 +115,30 @@ var MapReduceConductor = (function () {
 
   MapReduceConductor.prototype.onReduceMessage = function (evt) {
     this.isReduceProcessing = false;
-    this.processMessage( 'ReduceWorker', evt.data);
+    this.processMessage('ReduceWorker', evt.data);
   };
 
-  MapReduceConductor.prototype.onDataset = function(newDataset){
+  MapReduceConductor.prototype.onDataset = function (newDataset) {
     this.isRequestWaiting = false;
 
     _dataset.store(newDataset);
 
-    if(CONFIG.verbose) {
+    if (CONFIG.verbose) {
       console.log(newDataset);
     }
   };
 
-  MapReduceConductor.prototype.onError = function(workerType,error){
-    console.log(workerType,error);
+  MapReduceConductor.prototype.onError = function (workerType, error) {
+    console.log(workerType, error);
   };
 
-  MapReduceConductor.prototype.action = function(){
+  MapReduceConductor.prototype.action = function () {
 
 //TODO  use this.isParentRunoutDataset
 
-    if(!(this.isRequestWaiting || isParentRunoutDataset || isRoot())){
-      if(_dataset.size() < this.requestThreshold){
-        if(CONFIG.verbose){
+    if (!(this.isRequestWaiting || isParentRunoutDataset || isRoot())) {
+      if (_dataset.size() < this.requestThreshold) {
+        if (CONFIG.verbose) {
           console.log('c:request_dataset');
         }
 
@@ -145,44 +146,45 @@ var MapReduceConductor = (function () {
       }
     }
 
-    if(!this.isMapProcessing){
-      if(!_dataset.isEmpty()){
-        if(CONFIG.verbose){
+    if (!this.isMapProcessing) {
+      if (!_dataset.isEmpty()) {
+        if (CONFIG.verbose) {
           console.log('c:map');
         }
         this.map(this.mapSize);
       }
     }
 
-    if(!this.isReduceProcessing){
+    if (!this.isReduceProcessing) {
 
 
-      if(_intermediates.size() >= this.incrementalReduceThreshold &&
-        !_intermediates.isAllReduced){
+      if (_intermediates.size() >= this.incrementalReduceThreshold && !_intermediates.isAllReduced) {
 
         this.reduce(this.reduceSize);
 
-      } else if(!_intermediates.isEmpty()){
+      } else if (!_intermediates.isEmpty()) {
 
-        if(isRoot()){
-          if(!_intermediates.isAllReduced){
+        if (isRoot()) {
+          if (!_intermediates.isAllReduced) {
             this.reduce(this.reduceSize)
           }
-        } else if(isParentRunoutDataset){
+        } else if (isParentRunoutDataset) {
           this.rise(this.riseSize);
         }
       }
 
       var isChildrenRunoutIntermediates = isLeaf() || isAllChildrenCompleted();
 
-      if (isChildrenRunoutIntermediates && _dataset.isEmpty()){
+      if (isChildrenRunoutIntermediates && _dataset.isEmpty()) {
 
-        if(isRoot() && _intermediates.isAllReduced) {
+        if (isRoot() && _intermediates.isAllReduced) {
 
           outputBox.message("All", "Completed");
           this.stop();
+          outputBox.message("Time(s):", Math.round(this.stopTime - this.startTime) / 1000);
+          this.showResult();
 
-        } else if(!isRoot() && _intermediates.isEmpty() && isParentRunoutDataset){
+        } else if (!isRoot() && _intermediates.isEmpty() && isParentRunoutDataset) {
 
           Command.sendto(parentId).command('completed');
           outputBox.message("Subtree", "Completed");
@@ -194,36 +196,30 @@ var MapReduceConductor = (function () {
   };
 
 
-  MapReduceConductor.prototype.run = function(){
+  MapReduceConductor.prototype.run = function () {
+    this.startTime = performance.now();
     this.isRunning = true;
-    this.timerId = setInterval(this.onClock.bind(this),this.clockCycle);
+    this.timerId = setInterval(this.onClock.bind(this), this.clockCycle);
   };
 
-  MapReduceConductor.prototype.stop = function(){
+  MapReduceConductor.prototype.stop = function () {
+    this.stopTime = performance.now();
     clearInterval(this.timerId);
     this.isRunning = false;
   };
 
-  MapReduceConductor.prototype.onClock = function(){
+  MapReduceConductor.prototype.onClock = function () {
     this.action();
   };
 
+  MapReduceConductor.prototype.showResult = function () {
+    var link = $("<a>").attr({
+      "href":intermediatesStore.objectURI(),
+      "download":'result.csv'
+    }).html("[click]");
+    outputBox.message("Result:", link);
+  };
+
+
   return MapReduceConductor;
 })();
-
-
-/*
-
-  else if(!_intermediates.isEmpty()){
-    if(isRoot()){
-      if(!_intermediates.isAllReduced){ // add Condition
-        this.reduce(this.reduceSize)
-      }
-    } else if(isParentRunoutDataset){
-        this.rise(this.riseSize);
-    }
-  }
-
-
-
-*/

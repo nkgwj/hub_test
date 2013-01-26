@@ -5,7 +5,7 @@ var WordCountHeavy = (function () {
   WordCountHeavy.prototype.map = function (item, emit) {
     var splitted = item.split(/\W+/g);
     splitted.forEach(function (word) {
-
+      var j;
       for(i=0;i<30000;i++){
          j += Math.random();
       }

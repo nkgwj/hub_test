@@ -30,7 +30,7 @@ var DataStore = (function () {
     return this.repository.length === 0;
   };
 
-  DataStore.prototype.size = function(){
+  DataStore.prototype.size = function () {
     return this.repository.length;
   };
 

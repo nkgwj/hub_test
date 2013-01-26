@@ -31,7 +31,7 @@ $(function () {
 
     readFile(datasetFile, function (fileName, fileContent) {
       console.log(fileContent);
-      dataset = fileContent.replace(/[\r\n]/g,"").split(/\s+/);
+      dataset = fileContent.replace(/[\r\n]/g, "").split(/\s+/);
       console.log(dataset);
     });
 

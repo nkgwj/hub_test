@@ -18,13 +18,15 @@ var Command = (function () {
       program = json.program;
 
       gridProject = new GridProject(myId);
-      gridProject.setup(program,datasetStore,intermediatesStore);
+      gridProject.setup(program, datasetStore, intermediatesStore);
 
-      if(CONFIG.autoStart){
+      if (CONFIG.autoStart) {
         mapReduceConductor.run();
       }
-      //gridProject.createNodes();
-      $('#controller').slideDown();
+
+      if (CONFIG.controller) {
+        $('#controller').slideDown();
+      }
 
       if (isLeaf()) {
         Command.sendto(parentId).command('program_ready');
@@ -48,21 +50,18 @@ var Command = (function () {
 
     };
 
-    if (isRoot()){
-      $('#controller').slideDown();
-    } else if(isAllChildrenProgramReady) { //FIXME
+    if (isRoot()) {
+      if (CONFIG.controller) {
+        $('#controller').slideDown();
+      }
+    } else if (isAllChildrenProgramReady) { //FIXME
       Command.sendto(parentId).command('program_ready');
     }
   };
 
   Command.prototype.completed = function (sender, json) {
     connections[sender.id].completed = true;
-    console.log(json);
-
-
-    //if (isAllChildrenCompleted()) {
-    // Command.sendto(parentId).command('completed');
-   // }
+    outputBox.message(sender.id, "completed");
   };
 
   Command.prototype.request_dataset = function (sender, json) {
@@ -136,7 +135,6 @@ var Command = (function () {
 
   Command.dispatch = function (cmd, senderId, json) {
     if (_command[cmd]) {
-     // outputBox.log(cmd);
       var sender = Command.sendto(senderId);
       _command[cmd](sender, json);
 

@@ -20,7 +20,7 @@ var KeyValueStore = (function () {
 
     Object.keys(keyValueTable).forEach(function (key) {
       var value = keyValueTable[key];
-      if(CONFIG.verbose) {
+      if (CONFIG.verbose) {
         console.log(key, value);
       }
       var list = that.repository.get(key) || [];
@@ -54,10 +54,10 @@ var KeyValueStore = (function () {
         }
       }
     } catch (e) {
-      if(e instanceof StopIteration){
-        console.log("StopIteration:"+e);
+      if (e instanceof StopIteration) {
+        console.log("StopIteration:" + e);
       } else {
-        console.error("Unknown Error:"+e)
+        console.error("Unknown Error:" + e)
       }
     }
 
@@ -66,35 +66,35 @@ var KeyValueStore = (function () {
     return intermediates; // if(isAllReduced === false) return null
   };
 
-  KeyValueStore.prototype.objectURI = function(){
+  KeyValueStore.prototype.objectURI = function () {
     var iterator = this.iterator();
-    var key,value;
+    var key, value;
     var fileContentLines = [];
 
     try {
       while (key = iterator.next()) {
         value = this.repository.get(key);
-        fileContentLines.push(key+","+value[0]+"\n");
+        fileContentLines.push(key + "," + value[0] + "\n");
       }
 
 
     } catch (e) {
-      if(e instanceof StopIteration){
-        console.log("StopIteration:"+e);
+      if (e instanceof StopIteration) {
+        console.log("StopIteration:" + e);
         var blob = new Blob(fileContentLines, {type:'text\/plain'});
         return URL.createObjectURL(blob);
       } else {
-        console.error("Unknown Error:"+e)
+        console.error("Unknown Error:" + e)
       }
     }
 
   };
 
-  KeyValueStore.prototype.size = function(){
+  KeyValueStore.prototype.size = function () {
     return this.repository.size;
   };
 
-  KeyValueStore.prototype.isEmpty = function(){
+  KeyValueStore.prototype.isEmpty = function () {
     return this.repository.size === 0;
   };
 

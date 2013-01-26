@@ -12,12 +12,12 @@ var Compiler = (function () {
     this.executable = Compiler.collections[fileType];
   }
 
-  Compiler.prototype.isSupported = function(fileType){
+  Compiler.prototype.isSupported = function (fileType) {
     return Compiler.collections[fileType];
   };
 
-  Compiler.prototype.compile = function (source,deffered) {
-    this.executable(source,deffered);
+  Compiler.prototype.compile = function (source, deffered) {
+    this.executable(source, deffered);
   };
 
   return Compiler;
