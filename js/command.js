@@ -61,7 +61,7 @@ var Command = (function () {
 
   Command.prototype.completed = function (sender, json) {
     connections[sender.id].completed = true;
-    outputBox.message(sender.id, "completed");
+    outputBox.message(sender.id, "Completed");
   };
 
   Command.prototype.request_dataset = function (sender, json) {
