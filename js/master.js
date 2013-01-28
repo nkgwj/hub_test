@@ -11,14 +11,21 @@ $(function () {
   var dataset;
   var startUp = function () {
     projectRef = projectsRef.child(project);
-    projectRef.removeOnDisconnect();
+    projectRef.onDisconnect().remove();
 
     nextIdRef = projectRef.child("nextId");
     nodesRef = projectRef.child("nodes");
 
-    myId = 1;
-    nodesRef.remove(function () {
-      listen(myId);
+    nextIdRef.transaction(function (value) {
+      myId = 1;
+      return myId+1;
+    },function(error,success,snapshot,dummy){
+      if(!success){
+        console.error("Firebase:Transaction Error(nextId)");
+      }
+      nodesRef.remove(function () {
+        listen(myId);
+      });
     });
 
     datasetStore.store(dataset);

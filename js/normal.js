@@ -9,6 +9,10 @@
 $(function () {
   var project;
   var onaddedproject = function (addedProject) {
+    if(addedProject.name() === CONFIG.autoConnect){
+      join(addedProject.name());
+      return;
+    }
     var option = $('<option>').attr('value', addedProject.name()).html(addedProject.name());
     $('#project').append(option);
   };
@@ -33,13 +37,26 @@ $(function () {
     $('#config').attr('disabled', 'disabled').slideUp();
 
     projectRef = projectsRef.child(project);
-    projectRef.removeOnDisconnect();
+    projectRef.onDisconnect().remove();
+    projectRef.on('value',function(snapshot){
+      if(snapshot.val() === null){
+        if(projectName === CONFIG.autoConnect){
+          window.location.reload(true);
+        }
+      }
+    });
+
 
     nextIdRef = projectRef.child('nextId');
     nodesRef = projectRef.child('nodes');
 
-    nextIdRef.once('value', function (snapshot) {
-      myId = snapshot.val();
+    nextIdRef.transaction(function (value) {
+      myId = value;
+      return myId+1;
+    },function(error,success,snapshot,dummy){
+      if(!success){
+        console.error("Firebase:Transaction Error(nextId)");
+      }
       listen(myId);
       nodesRef.child(parentId).child('queue').push({
         type:'request',
@@ -47,6 +64,7 @@ $(function () {
       });
       initPeerConnection();
     });
+
   };
 
   projectsRef.on('child_added', onaddedproject);

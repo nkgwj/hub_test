@@ -58,7 +58,7 @@ function listen(myId) {
     $('#parentId').text('<*>').addClass('none');
   }
 
-  nextIdRef.set(myId + 1);
+  //nextIdRef.set(myId + 1);
   nodesRef.child(myId).child('queue').on('child_added', function (snapshot) {
     var data = snapshot.val();
     snapshot.ref().remove();
@@ -88,7 +88,6 @@ var isAllChildrenCompleted = function () {
     });
 
 };
-
 
 function checkFeature() {
   if (!navigator.mozGetUserMedia) {
