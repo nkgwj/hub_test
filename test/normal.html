@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>node</title>
+  <base href="http://nkgwj.github.com/hub_test">
+  <link rel="stylesheet" href="./css/bootstrap.css" type="text/css">
+  <link rel="stylesheet" href="./css/main.css" type="text/css">
+  <script src="https://static.firebase.com/v0/firebase.js"></script>
+  <script src="http://code.jquery.com/jquery-2.0.0b1.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/1.0.0-rc.3/lodash.min.js"></script>
+
+  <script type="text/javascript">
+    var isRoot = false;
+  </script>
+  <script src="./js/config.js"></script>
+  <script src="./js/datastore.js"></script>
+  <script src="./js/keyvaluestore.js"></script>
+  <script src="./js/peernode.js"></script>
+  <script src="./js/command.js"></script>
+  <script src="./js/outputbox.js"></script>
+  <script src="./js/project.js"></script>
+  <script src="./js/common.js"></script>
+  <script src="./js/connection.js"></script>
+  <script src="./js/mapreduce-worker.js"></script>
+  <script src="./js/mapreduce-agent.js"></script>
+  <script src="./js/mapreduce-conductor.js"></script>
+  <script src="./js/controller.js"></script>
+  <script src="./js/normal.js"></script>
+</head>
+<body>
+<header>
+  <h1>Web P2P Grid:Normal Node</h1>
+  <dl id="id-info">
+    <dt>ID</dt>
+    <dd id="myId"></dd>
+    <dt>Parent's ID</dt>
+    <dd id="parentId"></dd>
+    <dt>Children's IDs</dt>
+    <dd id="childrenIds"></dd>
+  </dl>
+</header>
+<fieldset id="config">
+  <legend>Setup Nodes</legend>
+  <label for="project">Select project:</label>
+  <select name="project" id="project"></select>
+  <button id="join">Join</button>
+</fieldset>
+
+<fieldset id="controller">
+  <button id="btn-program" class="unused">program</button>
+  <button id="btn-dataset">dataset</button>
+  <input type="text" name="dataset-size" id="dataset-size">
+  <button id="btn-map">map</button>
+  <input type="text" name="map-size" id="map-size">
+  <button id="btn-reduce">reduce</button>
+  <input type="text" name="reduce-size" id="reduce-size">
+  <button id="btn-rise">rise</button>
+  <input type="text" name="rise-size" id="rise-size">
+  <button id="btn-result" class="unused">result</button>
+</fieldset>
+<pre id="log"></pre>
+
+</body>
+</html>
