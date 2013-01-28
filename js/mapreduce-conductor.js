@@ -175,7 +175,7 @@ var MapReduceConductor = (function () {
 
       var isChildrenRunoutIntermediates = isLeaf() || isAllChildrenCompleted();
 
-      if (isChildrenRunoutIntermediates && _dataset.isEmpty()) {
+      if (isChildrenRunoutIntermediates && _dataset.isEmpty() && !this.isMapProcessing) {
 
         if (isRoot() && _intermediates.isAllReduced) {
 
