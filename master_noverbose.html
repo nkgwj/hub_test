@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>master node</title>
+  <link rel="stylesheet" href="./css/bootstrap.css" type="text/css">
+  <link rel="stylesheet" href="./css/main.css" type="text/css">
+  <script src="https://static.firebase.com/v0/firebase.js"></script>
+  <script src="http://code.jquery.com/jquery-2.0.0b1.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/1.0.0-rc.3/lodash.min.js"></script>
+  <script src="./js/lib/tsc/typescript.js"></script>
+  <script src="./js/lib/tsc/typescript.compile.js"></script>
+  <script src="./js/lib/coffee-script.js"></script>
+  <script type="text/javascript">
+    var isRoot = true;
+  </script>
+  <script src="./js/config_noverbose.js"></script>
+  <script src="./js/datastore.js"></script>
+  <script src="./js/keyvaluestore.js"></script>
+  <script src="./js/peernode.js"></script>
+  <script src="./js/command.js"></script>
+  <script src="./js/outputbox.js"></script>
+  <script src="./js/project.js"></script>
+  <script src="./js/common.js"></script>
+  <script src="./js/connection.js"></script>
+  <script src="./js/mapreduce-worker.js"></script>
+  <script src="./js/mapreduce-agent.js"></script>
+  <script src="./js/mapreduce-conductor.js"></script>
+  <script src="./js/controller.js"></script>
+  <script src="./js/compiler.js"></script>
+  <script src="./js/master.js"></script>
+</head>
+<body>
+<header>
+  <h1>Web P2P Grid:Master Node</h1>
+  <dl id="id-info">
+    <dt>ID</dt>
+    <dd id="myId"></dd>
+    <dt>Parent's ID</dt>
+    <dd id="parentId"></dd>
+    <dt>Children's IDs</dt>
+    <dd id="childrenIds"></dd>
+  </dl>
+</header>
+<fieldset id="config">
+  <legend>Setup MasterNode</legend>
+  <div>
+    <label>Application:<input type="file" name="program" id="program" accept="text/javascript"></label>
+  </div>
+  <div>
+    <label>DataSet:<input type="file" name="dataset" id="dataset" accept="application/json"></label>
+  </div>
+  <div>
+    <label>Project:<input type="text" name="project" id="project"></label>
+    <button id="setup">Setup</button>
+  </div>
+</fieldset>
+
+<button id="btn-start">Start</button>
+
+<fieldset id="controller">
+  <button id="btn-dataset" class="unused">dataset</button>
+  <input type="text" name="dataset-size" id="dataset-size" class="unused">
+  <button id="btn-map">map</button>
+  <input type="text" name="map-size" id="map-size">
+  <button id="btn-reduce">reduce</button>
+  <input type="text" name="reduce-size" id="reduce-size">
+  <button id="btn-rise" class="unused">rise</button>
+  <input type="text" name="rise-size" id="rise-size" class="unused">
+  <button id="btn-result" >result</button>
+</fieldset>
+
+<pre id="log"></pre>
+
+</body>
+</html>
