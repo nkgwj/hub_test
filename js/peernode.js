@@ -11,7 +11,6 @@ var PeerNode = (function () {
     this.id = id;
     this.dataChannel = connections[id].dataChannel;
   }
-
   PeerNode.prototype.postMessage = function (str) {
     this.dataChannel.send(JSON.stringify(str))
   };

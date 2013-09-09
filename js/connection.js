@@ -6,16 +6,11 @@ function onAnswer(answer, port, fromUser) {
 
   var peerConnection = connection.peerConnection;
 
-  peerConnection.setRemoteDescription(JSON.parse(answer), function () {
+  peerConnection.setRemoteDescription(new mozRTCSessionDescription(JSON.parse(answer)), function () {
     outputBox.log('Recieved a [answer]');
 
     outputBox.log('[Session Description Negotiation Completed]');
-/*
-    setTimeout(function () {
-      peerConnection.connectDataConnection(connection.offererPort, connection.answererPort);
-      outputBox.log('connectDataConnection(' + connection.offererPort + ',' + connection.answererPort + ')');
-    }, 500); //3000 -> 500
-*/
+
   }, error);
 }
 
@@ -42,11 +37,11 @@ function onOffer(offer, port, fromUser) {
       outputBox.log('[Connected]');
     };
 
-    peerConnection.setRemoteDescription(JSON.parse(offer), function () {
+    peerConnection.setRemoteDescription(new mozRTCSessionDescription(JSON.parse(offer)), function () {
       outputBox.log('Received a [offer]');
       peerConnection.createAnswer(function (answer) {
         outputBox.log('Created a [answer]');
-        peerConnection.setLocalDescription(answer, function () {
+        peerConnection.setLocalDescription(new mozRTCSessionDescription(answer), function () {
 
           outputBox.log('Sending:local -[answer]-> remote');
           connections[fromUser].peerConnection = peerConnection;
@@ -60,12 +55,7 @@ function onOffer(offer, port, fromUser) {
           };
 
           nodesRef.child(fromUser).child('queue').push(answerMessage);
-/*
-          setTimeout(function () {
-            peerConnection.connectDataConnection(connections[fromUser].answererPort, connections[fromUser].offererPort);
-            outputBox.log('connectDataConnection(' + connections[fromUser].answererPort + ',' + connections[fromUser].offererPort + ')');
-          }, 500); //3000 -> 500
-*/
+
         }, error);
       }, error);
     }, error);
@@ -133,15 +123,13 @@ function initPeerConnection() {
     peerConnection.createOffer(function (offer) {
       outputBox.log('Created a [offer]');
 
-      peerConnection.setLocalDescription(offer, function () {
+      peerConnection.setLocalDescription(new mozRTCSessionDescription(offer), function () {
         outputBox.log('Sending:local -[offer]-> remote');
 
         connections[parentId].peerConnection = peerConnection;
-        //connections[parentId].offererPort = Math.floor(Math.random() * 5000) * 2;
         var offerMessage = {
           type:'offer',
           sender:myId,
-         // port:connections[parentId].offererPort,
           offer:JSON.stringify(offer)
         };
 
