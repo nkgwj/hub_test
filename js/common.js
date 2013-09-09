@@ -39,7 +39,7 @@ var intermediatesStore = new KeyValueStore();
 var agent;
 var mapReduceConductor;
 
-var mainRef = new Firebase('https://rtc.firebaseio.com/hub_test_v1/');
+var mainRef = new Firebase('https://rtc.firebaseio.com/hub_test_v2/');
 var projectsRef = mainRef.child('projects');
 var projectRef, nextIdRef, nodesRef;
 var myId, parentId;

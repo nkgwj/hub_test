@@ -10,10 +10,12 @@ function onAnswer(answer, port, fromUser) {
     outputBox.log('Recieved a [answer]');
 
     outputBox.log('[Session Description Negotiation Completed]');
+/*
     setTimeout(function () {
       peerConnection.connectDataConnection(connection.offererPort, connection.answererPort);
       outputBox.log('connectDataConnection(' + connection.offererPort + ',' + connection.answererPort + ')');
     }, 500); //3000 -> 500
+*/
   }, error);
 }
 
@@ -25,7 +27,8 @@ function onOffer(offer, port, fromUser) {
     var peerConnection = new mozRTCPeerConnection();
     peerConnection.addStream(audioStream);
 
-    peerConnection.ondatachannel = function (channel) {
+    peerConnection.ondatachannel = function (event) {
+      var channel = event.channel;
       outputBox.log('DataChannel(label=' + channel.label + ')');
 
       connections[fromUser].dataChannel = setupDataChannel(channel, myId, fromUser);
@@ -47,21 +50,22 @@ function onOffer(offer, port, fromUser) {
 
           outputBox.log('Sending:local -[answer]-> remote');
           connections[fromUser].peerConnection = peerConnection;
-          connections[fromUser].answererPort = connections[fromUser].offererPort + 1;
+          //connections[fromUser].answererPort = connections[fromUser].offererPort + 1;
 
           var answerMessage = {
             type:'answer',
             sender:myId,
-            port:connections[fromUser].answererPort,
+            //port:connections[fromUser].answererPort,
             answer:JSON.stringify(answer)
           };
 
           nodesRef.child(fromUser).child('queue').push(answerMessage);
-
+/*
           setTimeout(function () {
             peerConnection.connectDataConnection(connections[fromUser].answererPort, connections[fromUser].offererPort);
             outputBox.log('connectDataConnection(' + connections[fromUser].answererPort + ',' + connections[fromUser].offererPort + ')');
           }, 500); //3000 -> 500
+*/
         }, error);
       }, error);
     }, error);
@@ -112,15 +116,19 @@ function initPeerConnection() {
 
     peerConnection.onconnection = function () {
       outputBox.log('[Connected]');
-      var channel = peerConnection.createDataChannel(String(myId), {});
-      connections[parentId].dataChannel = setupDataChannel(channel, myId, parentId);
+      //var channel = peerConnection.createDataChannel(String(myId), {});
+      //connections[parentId].dataChannel = setupDataChannel(channel, myId, parentId);
     };
 
-    peerConnection.ondatachannel = function (channel) {
+    peerConnection.ondatachannel = function (event) {
+      var channel = event.channel;
       outputBox.log('DataChannel(label=' + channel.label + ')');
       connections[parentId].dataChannel = channel;
-
     };
+
+    var channel = peerConnection.createDataChannel(String(myId), {});
+    connections[parentId].dataChannel = setupDataChannel(channel, myId, parentId);
+
 
     peerConnection.createOffer(function (offer) {
       outputBox.log('Created a [offer]');
@@ -129,11 +137,11 @@ function initPeerConnection() {
         outputBox.log('Sending:local -[offer]-> remote');
 
         connections[parentId].peerConnection = peerConnection;
-        connections[parentId].offererPort = Math.floor(Math.random() * 5000) * 2;
+        //connections[parentId].offererPort = Math.floor(Math.random() * 5000) * 2;
         var offerMessage = {
           type:'offer',
           sender:myId,
-          port:connections[parentId].offererPort,
+         // port:connections[parentId].offererPort,
           offer:JSON.stringify(offer)
         };
 
